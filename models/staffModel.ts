@@ -5,7 +5,10 @@ interface IStaff extends Document {
   role: string;
   expertise: string[];
   verificationCode: string;
+  email: string;
+  phone?: string;
   isVerified: boolean;
+  password: string;
   availability: {
     day: string;
     startTime: string;
@@ -21,6 +24,9 @@ const staffSchema: Schema<IStaff> = new Schema({
   name: { type: String, required: true },
   role: { type: String, required: true },
   expertise: { type: [String], default: [] },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  phone: { type: String },
   verificationCode: { type: String, required: true },
   isVerified: { type: Boolean, default: false },
   availability: [{

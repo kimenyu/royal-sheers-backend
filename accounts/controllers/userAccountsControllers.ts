@@ -72,7 +72,7 @@ export const createUser = async (req: Request, res: Response) => {
             from: process.env.SENDER_EMAIL, // Sender address
             to: email, // List of recipients
             subject: 'Code verification', // Subject line
-            text: `Hello ${firstname},\n\nYour verification code is: ${verificationCode}.\n\nRegards,\nNexus Team` // Plain text body
+            text: `Hello ${firstname},\n\nYour verification code is: ${verificationCode}.\n\nRegards,\nRoyal Sheers Team` // Plain text body
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
