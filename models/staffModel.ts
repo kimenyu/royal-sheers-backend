@@ -4,6 +4,8 @@ interface IStaff extends Document {
   name: string;
   role: string;
   expertise: string[];
+  verificationCode: string;
+  isVerified: boolean;
   availability: {
     day: string;
     startTime: string;
@@ -19,6 +21,8 @@ const staffSchema: Schema<IStaff> = new Schema({
   name: { type: String, required: true },
   role: { type: String, required: true },
   expertise: { type: [String], default: [] },
+  verificationCode: { type: String, required: true },
+  isVerified: { type: Boolean, default: false },
   availability: [{
     day: { type: String },
     startTime: { type: String },

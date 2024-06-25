@@ -9,6 +9,8 @@ interface IUser extends Document {
   history: mongoose.Types.ObjectId[];
   loyaltyPoints: number;
   membership?: mongoose.Types.ObjectId;
+  verificationCode: string;
+  isVerified: boolean;
 }
 
 const userSchema: Schema<IUser> = new Schema({
