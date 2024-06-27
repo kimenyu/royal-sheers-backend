@@ -1,18 +1,19 @@
 import express, { Request, Response, NextFunction } from "express";
 import mongoose, { ConnectOptions } from "mongoose";
 import router from "../royalSheersRoutes/sheersRoutes";
+// import dotenv from 'dotenv';
 
+// Load environment variables at the top
+require('dotenv').config();
 
-import dotenv from 'dotenv';
-dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
+console.log(port);
 
 app.use(express.json());
 
-
-// Cors middleware
+// CORS middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -23,8 +24,18 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+console.log("Starting the server...");
+
+// Check for MONGO_URI
+if (!process.env.MONGO_URL) {
+  console.error("MONGO_URI is not defined in the environment variables.");
+  process.exit(1); // Exit the process with failure
+}
+
+console.log("MONGO_URI:", process.env.MONGO_URI);
+
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 } as ConnectOptions)
@@ -38,17 +49,5 @@ try {
 } catch (error) {
   console.log(error);
 }
-
-
-// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWYyODRhOGQ4YTAyMmYyODVmNWE5NGIiLCJ1c2VyRW1haWwiOiJraW1lbnl1am9zZXBoNzNAZ21haWwuY29tIiwiaWF0IjoxNzEwNDQ0MDk5LCJleHAiOjE3MTA0NDc2OTl9.M8LzuMMcDykTmu90naAi3NXewrhJq4GQOvViK8BZz54';
-
-// jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-//   if (err) {
-//     console.log('Failed to authenticate token');
-//   } else {
-//     console.log('Token successfully authenticated');
-//     console.log(decoded);
-//   }
-// });
 
 app.use("/api", router);
