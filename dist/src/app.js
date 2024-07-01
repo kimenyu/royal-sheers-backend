@@ -42,5 +42,8 @@ try {
 catch (error) {
     console.log(error);
 }
+app.get("/home", (req, res) => {
+    res.json({ message: "Hello from Royal Sheers API!" });
+});
 app.use("/api/v1", sheersRoutes_1.default);
 //# sourceMappingURL=app.js.map
