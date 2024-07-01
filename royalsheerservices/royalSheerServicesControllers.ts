@@ -64,7 +64,7 @@ export const deleteService = async (req: Request, res: Response) => {
     if (!service) {
       return res.status(404).send({ error: 'Service not found' });
     }
-    res.status(204).send("service deleted successfully");
+    res.status(204).send({message: "service deleted successfully"});
   } catch (error) {
     res.status(500).send(error);
   }

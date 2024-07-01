@@ -32,7 +32,7 @@ router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, royal
 router.get('/services', royalSheerServicesControllers_1.getServices);
 router.get('/services/:id', royalSheerServicesControllers_1.getService);
 router.patch('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.updateService);
-router.delete('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.deleteService);
+router.delete('/services/delete/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.deleteService);
 // Review Routes
 router.post('/reviews', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.createReview);
 router.get('/reviews', reviewController_1.getReviews);

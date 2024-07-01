@@ -53,7 +53,7 @@ router.post('/create/services', staffAuthMiddleware, createService);
 router.get('/services', getServices);
 router.get('/services/:id',  getService);
 router.patch('/services/:id', staffAuthMiddleware, updateService);
-router.delete('/services/:id', staffAuthMiddleware, deleteService);
+router.delete('/services/delete/:id', staffAuthMiddleware, deleteService);
 
 // Review Routes
 router.post('/reviews', userAuthMiddleware, createReview);
