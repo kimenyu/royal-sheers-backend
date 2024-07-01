@@ -35,9 +35,9 @@ const transporter = nodemailer_1.default.createTransport({
     }
 });
 const createStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, role, expertise, email, phone, password } = req.body;
+    const { name, expertise, email, phone, password } = req.body;
     try {
-        if (!name || !role || !email || !phone || !password) {
+        if (!name || !email || !phone || !password) {
             return res.status(400).json({ error: "Missing required parameters" });
         }
         if (!(0, numParser_1.default)(phone)) {
@@ -54,7 +54,6 @@ const createStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const newStaff = new staffModel_1.default({
             name,
-            role,
             expertise,
             email,
             phone,
@@ -143,7 +142,7 @@ const loginStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!staff.isVerified) {
             return res.status(400).json({ message: 'Staff is not verified' });
         }
-        const token = jsonwebtoken_1.default.sign({ id: staff._id }, jwtSecret, { expiresIn: JWT_EXPIRATION_TIME });
+        const token = jsonwebtoken_1.default.sign({ userId: staff._id, userEmail: staff.email, role: staff.role }, jwtSecret, { expiresIn: JWT_EXPIRATION_TIME });
         return res.status(200).json({ token });
     }
     catch (error) {

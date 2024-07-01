@@ -1,0 +1,22 @@
+# POST http://localhost:5000/api/v1/staff/login
+# Content-Type: application/json
+
+# {
+#     "email": "njorogekimenyu@gmail.com",
+#     "password": "SecurePassword123"
+# }
+
+POST http://localhost:5000/api/v1/create/services
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjgyMDkwYzAxNWUyODFlYjQ3YmQwOWEiLCJ1c2VyRW1haWwiOiJuam9yb2dla2ltZW55dUBnbWFpbC5jb20iLCJyb2xlIjoic3RhZmYiLCJpYXQiOjE3MTk3OTg4NTEsImV4cCI6MTcxOTg4NTI1MX0.0Ju6-f7tgmIKt3NQsfSqCYfYFzkx4thPy9S5MyhFv1w
+
+{
+    "type": "Haircut",
+    "description": "A standard men's haircut",
+    "price": 25,
+    "duration": 30,
+    "addOns": [
+        "Shampoo",
+        "Conditioner"
+    ]
+}

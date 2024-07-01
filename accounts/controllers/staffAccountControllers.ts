@@ -25,9 +25,9 @@ const transporter = nodemailer.createTransport({
 });
 
 export const createStaff = async (req: Request, res: Response) => {
-  const { name, role, expertise, email, phone, password } = req.body;
+  const { name, expertise, email, phone, password } = req.body;
   try {
-    if (!name || !role || !email || !phone || !password) {
+    if (!name || !email || !phone || !password) {
       return res.status(400).json({ error: "Missing required parameters" });
     }
 
@@ -49,7 +49,6 @@ export const createStaff = async (req: Request, res: Response) => {
 
     const newStaff = new Staff({
       name,
-      role,
       expertise,
       email,
       phone,
@@ -154,7 +153,11 @@ export const loginStaff = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Staff is not verified' });
     }
 
-    const token = jwt.sign({ id: staff._id }, jwtSecret, { expiresIn: JWT_EXPIRATION_TIME });
+    const token = jwt.sign(
+      { userId: staff._id, userEmail: staff.email, role: staff.role },
+      jwtSecret,
+      { expiresIn: JWT_EXPIRATION_TIME }
+    );
 
     return res.status(200).json({ token });
   } catch (error) {

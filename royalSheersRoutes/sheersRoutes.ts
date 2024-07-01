@@ -1,12 +1,12 @@
 import express from 'express';
-import staffAuthMiddleware from '../middlewares/staffAuthMiddleware';
+import { staffAuthMiddleware } from '../middlewares/staffAuthMiddleware';
 import userAuthMiddleware from '../middlewares/userAuthMiddleware';
 import {
   createAppointment, getAppointments, cancelAppointment
 } from '../appointments/appointmentController';
 import {
   createService, getServices, getService, updateService, deleteService
-} from '../royalsheerservices/yoyalSheerServicesControllers';
+} from '../royalsheerservices/royalSheerServicesControllers';
 import {
   createReview, getReviews, getReview, updateReview, deleteReview
 } from '../reviews/reviewController';

@@ -22,11 +22,11 @@ interface IStaff extends Document {
 
 const staffSchema: Schema<IStaff> = new Schema({
   name: { type: String, required: true },
-  role: { type: String, required: true },
   expertise: { type: [String], default: [] },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   phone: { type: String },
+  role: { type: String, required: true, default: 'staff' },
   verificationCode: { type: String, required: true },
   isVerified: { type: Boolean, default: false },
   availability: [{

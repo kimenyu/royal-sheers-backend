@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const staffAuthMiddleware_1 = __importDefault(require("../middlewares/staffAuthMiddleware"));
+const staffAuthMiddleware_1 = require("../middlewares/staffAuthMiddleware");
 const userAuthMiddleware_1 = __importDefault(require("../middlewares/userAuthMiddleware"));
 const appointmentController_1 = require("../appointments/appointmentController");
-const yoyalSheerServicesControllers_1 = require("../royalsheerservices/yoyalSheerServicesControllers");
+const royalSheerServicesControllers_1 = require("../royalsheerservices/royalSheerServicesControllers");
 const reviewController_1 = require("../reviews/reviewController");
 const loyaltyControllers_1 = require("../loyalty/loyaltyControllers");
 const memberContollers_1 = require("../members/memberContollers");
@@ -28,11 +28,11 @@ router.post('/create/appointments', userAuthMiddleware_1.default, appointmentCon
 router.get('/list/appointments', userAuthMiddleware_1.default, appointmentController_1.getAppointments);
 router.delete('/appointments/:id', userAuthMiddleware_1.default, appointmentController_1.cancelAppointment);
 // Service Routes
-router.post('/create/services', staffAuthMiddleware_1.default, yoyalSheerServicesControllers_1.createService);
-router.get('/services', staffAuthMiddleware_1.default, yoyalSheerServicesControllers_1.getServices);
-router.get('/services/:id', staffAuthMiddleware_1.default, yoyalSheerServicesControllers_1.getService);
-router.patch('/services/:id', staffAuthMiddleware_1.default, yoyalSheerServicesControllers_1.updateService);
-router.delete('/services/:id', staffAuthMiddleware_1.default, yoyalSheerServicesControllers_1.deleteService);
+router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.createService);
+router.get('/services', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.getServices);
+router.get('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.getService);
+router.patch('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.updateService);
+router.delete('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.deleteService);
 // Review Routes
 router.post('/reviews', userAuthMiddleware_1.default, reviewController_1.createReview);
 router.get('/reviews', reviewController_1.getReviews);

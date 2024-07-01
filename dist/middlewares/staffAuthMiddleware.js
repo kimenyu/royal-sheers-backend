@@ -1,37 +1,35 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.staffAuthMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const staffModel_1 = __importDefault(require("../models/staffModel"));
-const staffAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.replace('Bearer ', '');
-    if (!token) {
-        return res.status(401).send({ error: 'Please authenticate' });
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const staffAuthMiddleware = (req, res, next) => {
+    // Get the JWT token from the Authorization header
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
+    const token = authHeader.split(' ')[1];
     try {
+        // Verify the JWT token
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        const staff = yield staffModel_1.default.findOne({ _id: decoded._id, 'tokens.token': token });
-        if (!staff) {
-            throw new Error();
+        console.log(decoded);
+        // Check if the user role is "staff"
+        if (decoded.role !== 'staff') {
+            return res.status(403).json({ error: 'Forbidden - Only staff are allowed' });
         }
-        req.user = staff;
+        // If the user is a staff, proceed with the request
         next();
     }
-    catch (e) {
-        res.status(401).send({ error: 'Please authenticate' });
+    catch (error) {
+        // Handle JWT verification errors
+        console.error(error);
+        return res.status(401).json({ error: 'Unauthorized' });
     }
-});
-exports.default = staffAuthMiddleware;
+};
+exports.staffAuthMiddleware = staffAuthMiddleware;
 //# sourceMappingURL=staffAuthMiddleware.js.map
