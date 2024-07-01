@@ -32,15 +32,15 @@ const router = express.Router();
 // User Routes
 
 router.post('/create/user', createUser);
-router.post('/verify/email', verifyEmailUser);
-router.post('/login', loginUser);
+router.post('/verify/user/email', verifyEmailUser);
+router.post('/user/login', loginUser);
 
 
 //staff routes
 
 router.post('/create/staff', createStaff);
-router.post('/verify/email', verifyEmailStaff);
-router.post('/login', loginStaff);
+router.post('/verify/staff/email', verifyEmailStaff);
+router.post('/staff/login', loginStaff);
 
 
 // Appointment Routes

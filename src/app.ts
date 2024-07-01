@@ -28,11 +28,11 @@ console.log("Starting the server...");
 
 // Check for MONGO_URI
 if (!process.env.MONGO_URL) {
-  console.error("MONGO_URI is not defined in the environment variables.");
+  console.error("MONGO_URL is not defined in the environment variables.");
   process.exit(1); // Exit the process with failure
 }
 
-console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log("MONGO_URL:", process.env.MONGO_URL);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URL, {
@@ -50,4 +50,4 @@ try {
   console.log(error);
 }
 
-app.use("/api/royalsheers/v1", router);
+app.use("/api/v1", router);

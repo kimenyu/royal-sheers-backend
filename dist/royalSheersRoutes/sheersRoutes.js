@@ -12,7 +12,17 @@ const reviewController_1 = require("../reviews/reviewController");
 const loyaltyControllers_1 = require("../loyalty/loyaltyControllers");
 const memberContollers_1 = require("../members/memberContollers");
 const giftControllers_1 = require("../giftcards/giftControllers");
+const userAccountsControllers_1 = require("../accounts/controllers/userAccountsControllers");
+const staffAccountControllers_1 = require("../accounts/controllers/staffAccountControllers");
 const router = express_1.default.Router();
+// User Routes
+router.post('/create/user', userAccountsControllers_1.createUser);
+router.post('/verify/user/email', userAccountsControllers_1.verifyEmailUser);
+router.post('/user/login', userAccountsControllers_1.loginUser);
+//staff routes
+router.post('/create/staff', staffAccountControllers_1.createStaff);
+router.post('/verify/staff/email', staffAccountControllers_1.verifyEmailStaff);
+router.post('/staff/login', staffAccountControllers_1.loginStaff);
 // Appointment Routes
 router.post('/create/appointments', userAuthMiddleware_1.default, appointmentController_1.createAppointment);
 router.get('/list/appointments', userAuthMiddleware_1.default, appointmentController_1.getAppointments);

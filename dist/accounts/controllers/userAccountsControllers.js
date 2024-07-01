@@ -35,9 +35,9 @@ const transporter = nodemailer_1.default.createTransport({
     }
 });
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, phone, email, password } = req.body;
+    const { username, phone, email, password } = req.body;
     try {
-        if (!firstname || !lastname || !phone || !email || !password) {
+        if (!username || !phone || !email || !password) {
             return res.status(400).json({ error: "missing required parameters" });
         }
         // validate phone and email
@@ -60,8 +60,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         // create user
         const newUser = new userModel_1.default({
-            firstname,
-            lastname,
+            username,
             phone,
             email,
             password: hashedPassword,
@@ -72,7 +71,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             from: process.env.SENDER_EMAIL, // Sender address
             to: email, // List of recipients
             subject: 'Code verification', // Subject line
-            text: `Hello ${firstname},\n\nYour verification code is: ${verificationCode}.\n\nRegards,\nRoyal Sheers Team` // Plain text body
+            text: `Hello ${username},\n\nYour verification code is: ${verificationCode}.\n\nRegards,\nRoyal Sheers Team` // Plain text body
         };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {

@@ -25,9 +25,9 @@ const transporter = nodemailer.createTransport({
 });
 
 export const createUser = async (req: Request, res: Response) => {
-    const { firstname, lastname, phone, email, password } = req.body;
+    const { username,  phone, email, password } = req.body;
     try {
-        if (!firstname || !lastname || !phone || !email || !password) {
+        if (!username || !phone || !email || !password) {
             return res.status(400).json({ error: "missing required parameters" });
         }
 
@@ -58,8 +58,7 @@ export const createUser = async (req: Request, res: Response) => {
 
         // create user
         const newUser = new User({
-            firstname,
-            lastname,
+            username,
             phone,
             email,
             password: hashedPassword,
@@ -72,7 +71,7 @@ export const createUser = async (req: Request, res: Response) => {
             from: process.env.SENDER_EMAIL, // Sender address
             to: email, // List of recipients
             subject: 'Code verification', // Subject line
-            text: `Hello ${firstname},\n\nYour verification code is: ${verificationCode}.\n\nRegards,\nRoyal Sheers Team` // Plain text body
+            text: `Hello ${username},\n\nYour verification code is: ${verificationCode}.\n\nRegards,\nRoyal Sheers Team` // Plain text body
         };
 
         transporter.sendMail(mailOptions, (error, info) => {

@@ -23,10 +23,10 @@ app.use((req, res, next) => {
 console.log("Starting the server...");
 // Check for MONGO_URI
 if (!process.env.MONGO_URL) {
-    console.error("MONGO_URI is not defined in the environment variables.");
+    console.error("MONGO_URL is not defined in the environment variables.");
     process.exit(1); // Exit the process with failure
 }
-console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log("MONGO_URL:", process.env.MONGO_URL);
 // MongoDB connection
 mongoose_1.default.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -42,5 +42,5 @@ try {
 catch (error) {
     console.log(error);
 }
-app.use("/api", sheersRoutes_1.default);
+app.use("/api/v1", sheersRoutes_1.default);
 //# sourceMappingURL=app.js.map
