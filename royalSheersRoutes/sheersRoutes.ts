@@ -19,8 +19,29 @@ import {
 import {
   createGiftCard, getGiftCards, getGiftCard, updateGiftCard, deleteGiftCard
 } from '../giftcards/giftControllers';
+import { 
+  createUser, verifyEmailUser, loginUser
+} from '../accounts/controllers/userAccountsControllers';
+
+import {
+  createStaff, verifyEmailStaff, loginStaff
+} from '../accounts/controllers/staffAccountControllers';
 
 const router = express.Router();
+
+// User Routes
+
+router.post('/create/user', createUser);
+router.post('/verify/email', verifyEmailUser);
+router.post('/login', loginUser);
+
+
+//staff routes
+
+router.post('/create/staff', createStaff);
+router.post('/verify/email', verifyEmailStaff);
+router.post('/login', loginStaff);
+
 
 // Appointment Routes
 router.post('/create/appointments', userAuthMiddleware, createAppointment);

@@ -50,4 +50,4 @@ try {
   console.log(error);
 }
 
-app.use("/api", router);
+app.use("/api/royalsheers/v1", router);
