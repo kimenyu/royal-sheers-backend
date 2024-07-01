@@ -21,9 +21,9 @@ const verifyAccounts_1 = __importDefault(require("../../utils/verification/verif
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+dotenv_1.default.config();
 const jwtSecret = process.env.JWT_SECRET;
 const JWT_EXPIRATION_TIME = '1d';
-dotenv_1.default.config();
 const transporter = nodemailer_1.default.createTransport({
     service: 'gmail',
     auth: {
@@ -51,13 +51,14 @@ const createStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(400).send({ error: "Email is already in use" });
         }
         const verificationCode = (0, verifyAccounts_1.default)();
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const newStaff = new staffModel_1.default({
             name,
             role,
             expertise,
             email,
             phone,
-            password,
+            password: hashedPassword,
             verificationCode,
             isVerified: false,
             availability: [],
@@ -80,7 +81,7 @@ const createStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             else {
                 console.log('Email sent: ' + info.response);
-                return res.status(201).json({ message: "Staff created successfully. Verification code sent to email." });
+                // It's incorrect to send a response here. The response has already been sent after saving the staff.
             }
         });
         return res.status(201).json({

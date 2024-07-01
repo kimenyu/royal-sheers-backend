@@ -7,11 +7,11 @@ import nodemailer from 'nodemailer';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-const jwtSecret = process.env.JWT_SECRET as string;
-const JWT_EXPIRATION_TIME = '1d';
-
 
 dotenv.config();
+
+const jwtSecret = process.env.JWT_SECRET as string;
+const JWT_EXPIRATION_TIME = '1d';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -45,6 +45,7 @@ export const createStaff = async (req: Request, res: Response) => {
     }
 
     const verificationCode = generateVerificationCode();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newStaff = new Staff({
       name,
@@ -52,7 +53,7 @@ export const createStaff = async (req: Request, res: Response) => {
       expertise,
       email,
       phone,
-      password,
+      password: hashedPassword,
       verificationCode,
       isVerified: false,
       availability: [],
@@ -77,7 +78,7 @@ export const createStaff = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Failed to send verification email" });
       } else {
         console.log('Email sent: ' + info.response);
-        return res.status(201).json({ message: "Staff created successfully. Verification code sent to email." });
+        // It's incorrect to send a response here. The response has already been sent after saving the staff.
       }
     });
 
