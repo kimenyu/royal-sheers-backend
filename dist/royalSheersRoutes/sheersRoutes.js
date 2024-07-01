@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const staffAuthMiddleware_1 = require("../middlewares/staffAuthMiddleware");
-const userAuthMiddleware_1 = __importDefault(require("../middlewares/userAuthMiddleware"));
+const userAuthMiddleware_1 = require("../middlewares/userAuthMiddleware");
 const appointmentController_1 = require("../appointments/appointmentController");
 const royalSheerServicesControllers_1 = require("../royalsheerservices/royalSheerServicesControllers");
 const reviewController_1 = require("../reviews/reviewController");
@@ -24,25 +24,25 @@ router.post('/create/staff', staffAccountControllers_1.createStaff);
 router.post('/verify/staff/email', staffAccountControllers_1.verifyEmailStaff);
 router.post('/staff/login', staffAccountControllers_1.loginStaff);
 // Appointment Routes
-router.post('/create/appointments', userAuthMiddleware_1.default, appointmentController_1.createAppointment);
-router.get('/list/appointments', userAuthMiddleware_1.default, appointmentController_1.getAppointments);
-router.delete('/appointments/:id', userAuthMiddleware_1.default, appointmentController_1.cancelAppointment);
+router.post('/create/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointment);
+router.get('/list/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointments);
+router.delete('/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
 // Service Routes
 router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.createService);
-router.get('/services', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.getServices);
-router.get('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.getService);
+router.get('/services', royalSheerServicesControllers_1.getServices);
+router.get('/services/:id', royalSheerServicesControllers_1.getService);
 router.patch('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.updateService);
 router.delete('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.deleteService);
 // Review Routes
-router.post('/reviews', userAuthMiddleware_1.default, reviewController_1.createReview);
+router.post('/reviews', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.createReview);
 router.get('/reviews', reviewController_1.getReviews);
 router.get('/reviews/:id', reviewController_1.getReview);
-router.patch('/reviews/:id', userAuthMiddleware_1.default, reviewController_1.updateReview);
-router.delete('/reviews/:id', userAuthMiddleware_1.default, reviewController_1.deleteReview);
+router.patch('/reviews/:id', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.updateReview);
+router.delete('/reviews/:id', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.deleteReview);
 // Loyalty Program Routes
-router.get('/loyalty', userAuthMiddleware_1.default, loyaltyControllers_1.getLoyaltyProgram);
-router.post('/loyalty/points', userAuthMiddleware_1.default, loyaltyControllers_1.addLoyaltyPoints);
-router.post('/loyalty/redeem', userAuthMiddleware_1.default, loyaltyControllers_1.redeemReward);
+router.get('/loyalty', userAuthMiddleware_1.userAuthMiddleware, loyaltyControllers_1.getLoyaltyProgram);
+router.post('/loyalty/points', userAuthMiddleware_1.userAuthMiddleware, loyaltyControllers_1.addLoyaltyPoints);
+router.post('/loyalty/redeem', userAuthMiddleware_1.userAuthMiddleware, loyaltyControllers_1.redeemReward);
 // Membership Routes
 router.post('/memberships', memberContollers_1.createMembership);
 router.get('/memberships', memberContollers_1.getMemberships);

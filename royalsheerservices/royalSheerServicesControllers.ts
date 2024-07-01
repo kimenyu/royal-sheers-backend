@@ -49,7 +49,10 @@ export const updateService = async (req: Request, res: Response) => {
 
     updates.forEach(update => (service[update] = req.body[update]));
     await service.save();
-    res.send(service);
+    res.status(200).send({
+      message: 'Service updated successfully',
+      service
+    });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -61,7 +64,7 @@ export const deleteService = async (req: Request, res: Response) => {
     if (!service) {
       return res.status(404).send({ error: 'Service not found' });
     }
-    res.send(service);
+    res.status(204).send("service deleted successfully");
   } catch (error) {
     res.status(500).send(error);
   }

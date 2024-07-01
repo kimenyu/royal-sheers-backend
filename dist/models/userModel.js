@@ -28,6 +28,7 @@ const userSchema = new mongoose_1.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: { type: String, required: true, default: 'customer' },
     phone: { type: String, required: true, unique: true },
     verificationCode: { type: String, required: true },
     preferences: { type: [String], default: [] },

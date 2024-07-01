@@ -1,6 +1,6 @@
 import express from 'express';
 import { staffAuthMiddleware } from '../middlewares/staffAuthMiddleware';
-import userAuthMiddleware from '../middlewares/userAuthMiddleware';
+import { userAuthMiddleware } from '../middlewares/userAuthMiddleware';
 import {
   createAppointment, getAppointments, cancelAppointment
 } from '../appointments/appointmentController';
@@ -50,8 +50,8 @@ router.delete('/appointments/:id', userAuthMiddleware, cancelAppointment);
 
 // Service Routes
 router.post('/create/services', staffAuthMiddleware, createService);
-router.get('/services', staffAuthMiddleware, getServices);
-router.get('/services/:id', staffAuthMiddleware, getService);
+router.get('/services', getServices);
+router.get('/services/:id',  getService);
 router.patch('/services/:id', staffAuthMiddleware, updateService);
 router.delete('/services/:id', staffAuthMiddleware, deleteService);
 

@@ -1,31 +1,41 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/userModel';
+import dotenv from 'dotenv';
 
-interface AuthRequest extends Request {
-  user?: any;
-  header?: any;
+dotenv.config();
+
+interface DecodedToken {
+  userId: string;
+  userEmail: string;
+  role: string;
+  iat: number;
+  exp: number;
 }
 
-const userAuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return res.status(401).send({ error: 'Please authenticate' });
+export const userAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Get the JWT token from the Authorization header
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
+
+  const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    const user = await User.findOne({ _id: (decoded as any)._id, 'tokens.token': token });
-
-    if (!user) {
-      throw new Error();
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken;
+    console.log(decoded);
+    
+    // Check if the user role is "customer"
+    if (decoded.role !== 'customer') {
+      return res.status(403).json({ error: 'Forbidden - Only customer are allowed' });
     }
 
-    req.user = user;
+    // If the user is a customer, proceed with the request
     next();
-  } catch (e) {
-    res.status(401).send({ error: 'Please authenticate' });
+  } catch (error) {
+    // Handle JWT verification errors
+    console.error(error);
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 };
-
-export default userAuthMiddleware;

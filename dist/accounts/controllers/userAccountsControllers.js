@@ -151,7 +151,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).json({ message: 'user is not verified' });
         }
         // Generate JWT token
-        const token = jsonwebtoken_1.default.sign({ id: user._id }, jwtSecret, { expiresIn: JWT_EXPIRATION_TIME });
+        const token = jsonwebtoken_1.default.sign({ userId: user._id, userEmail: user.email, role: user.role }, jwtSecret, { expiresIn: JWT_EXPIRATION_TIME });
         return res.status(200).json({ token });
     }
     catch (error) {
