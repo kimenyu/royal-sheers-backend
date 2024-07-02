@@ -1,11 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import mongoose, { ConnectOptions } from "mongoose";
 import router from "../royalSheersRoutes/sheersRoutes";
-// import dotenv from 'dotenv';
+import cors from "cors";
 
 // Load environment variables at the top
 require('dotenv').config();
-
 
 const app = express();
 const port = process.env.PORT;
@@ -13,16 +12,14 @@ console.log(port);
 
 app.use(express.json());
 
-// CORS middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+// CORS configuration
+const corsOptions = {
+  origin: "https://royal-sheers-backend.onrender.com",
+  methods: "OPTIONS, GET, POST, PUT, PATCH, DELETE",
+  allowedHeaders: "Content-Type, Authorization"
+};
+
+app.use(cors(corsOptions));
 
 console.log("Starting the server...");
 
