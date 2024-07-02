@@ -22,6 +22,7 @@ interface IService extends Document {
   price: number;
   duration: number; // duration in minutes
   addOns: string[];
+  image?: string; // Add this line
 }
 
 const serviceSchema: Schema<IService> = new Schema({
@@ -29,7 +30,8 @@ const serviceSchema: Schema<IService> = new Schema({
   description: { type: String },
   price: { type: Number, required: true },
   duration: { type: Number, required: true },
-  addOns: { type: [String], default: [] }
+  addOns: { type: [String], default: [] },
+  image: { type: String }, // Add this line
 });
 
 const Service = mongoose.model<IService>('Service', serviceSchema);

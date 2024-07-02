@@ -26,7 +26,7 @@ import {
 import {
   createStaff, verifyEmailStaff, loginStaff
 } from '../accounts/controllers/staffAccountControllers';
-
+import upload from '../utils/imagesupload/multerConfig';
 const router = express.Router();
 
 // User Routes
@@ -49,10 +49,10 @@ router.get('/list/appointments', userAuthMiddleware, getAppointments);
 router.delete('/appointments/:id', userAuthMiddleware, cancelAppointment);
 
 // Service Routes
-router.post('/create/services', staffAuthMiddleware, createService);
+router.post('/create/services', staffAuthMiddleware,  upload.single('image'), createService);
 router.get('/services', getServices);
 router.get('/services/:id',  getService);
-router.patch('/services/:id', staffAuthMiddleware, updateService);
+router.patch('/services/:id', staffAuthMiddleware, upload.single('image'),updateService);
 router.delete('/services/delete/:id', staffAuthMiddleware, deleteService);
 
 // Review Routes

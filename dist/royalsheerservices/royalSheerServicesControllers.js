@@ -16,7 +16,16 @@ exports.deleteService = exports.updateService = exports.getService = exports.get
 const serviceModel_1 = __importDefault(require("../models/serviceModel"));
 const createService = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const service = new serviceModel_1.default(req.body);
+        const { type, description, price, duration, addOns } = req.body;
+        const image = req.file ? req.file.path : undefined;
+        const service = new serviceModel_1.default({
+            type,
+            description,
+            price,
+            duration,
+            addOns,
+            image
+        });
         yield service.save();
         res.status(201).send(service);
     }
@@ -50,7 +59,7 @@ const getService = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getService = getService;
 const updateService = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['type', 'description', 'price', 'duration', 'addOns'];
+    const allowedUpdates = ['type', 'description', 'price', 'duration', 'addOns', 'image'];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
     if (!isValidOperation) {
         return res.status(400).send({ error: 'Invalid updates!' });
@@ -60,7 +69,10 @@ const updateService = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!service) {
             return res.status(404).send({ error: 'Service not found' });
         }
-        updates.forEach(update => (service[update] = req.body[update]));
+        updates.forEach(update => {
+            var _a;
+            service[update] = req.body[update] || ((_a = req.file) === null || _a === void 0 ? void 0 : _a.path);
+        });
         yield service.save();
         res.status(200).send({
             message: 'Service updated successfully',
@@ -78,7 +90,7 @@ const deleteService = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!service) {
             return res.status(404).send({ error: 'Service not found' });
         }
-        res.status(204).send({ message: "service deleted successfully" });
+        res.status(204).send({ message: 'Service deleted successfully' });
     }
     catch (error) {
         res.status(500).send(error);

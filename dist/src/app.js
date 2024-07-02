@@ -6,20 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const sheersRoutes_1 = __importDefault(require("../royalSheersRoutes/sheersRoutes"));
-// import dotenv from 'dotenv';
+const cors_1 = __importDefault(require("cors"));
 // Load environment variables at the top
 require('dotenv').config();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 console.log(port);
 app.use(express_1.default.json());
-// CORS middleware
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, PATCH, DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    next();
-});
+// CORS configuration
+const corsOptions = {
+    origin: "https://royal-sheers-backend.onrender.com",
+    methods: "OPTIONS, GET, POST, PUT, PATCH, DELETE",
+    allowedHeaders: "Content-Type, Authorization"
+};
+app.use((0, cors_1.default)(corsOptions));
 console.log("Starting the server...");
 // Check for MONGO_URI
 if (!process.env.MONGO_URL) {

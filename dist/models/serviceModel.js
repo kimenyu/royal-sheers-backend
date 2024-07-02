@@ -42,7 +42,8 @@ const serviceSchema = new mongoose_1.Schema({
     description: { type: String },
     price: { type: Number, required: true },
     duration: { type: Number, required: true },
-    addOns: { type: [String], default: [] }
+    addOns: { type: [String], default: [] },
+    image: { type: String }, // Add this line
 });
 const Service = mongoose_1.default.model('Service', serviceSchema);
 exports.default = Service;

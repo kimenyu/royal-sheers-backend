@@ -14,6 +14,7 @@ const memberContollers_1 = require("../members/memberContollers");
 const giftControllers_1 = require("../giftcards/giftControllers");
 const userAccountsControllers_1 = require("../accounts/controllers/userAccountsControllers");
 const staffAccountControllers_1 = require("../accounts/controllers/staffAccountControllers");
+const multerConfig_1 = __importDefault(require("../utils/imagesupload/multerConfig"));
 const router = express_1.default.Router();
 // User Routes
 router.post('/create/user', userAccountsControllers_1.createUser);
@@ -28,10 +29,10 @@ router.post('/create/appointments', userAuthMiddleware_1.userAuthMiddleware, app
 router.get('/list/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointments);
 router.delete('/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
 // Service Routes
-router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.createService);
+router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('image'), royalSheerServicesControllers_1.createService);
 router.get('/services', royalSheerServicesControllers_1.getServices);
 router.get('/services/:id', royalSheerServicesControllers_1.getService);
-router.patch('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.updateService);
+router.patch('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('image'), royalSheerServicesControllers_1.updateService);
 router.delete('/services/delete/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.deleteService);
 // Review Routes
 router.post('/reviews', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.createReview);
