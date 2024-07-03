@@ -5,7 +5,7 @@ import upload from '../utils/imagesupload/multerConfig';
 export const createService = async (req: Request, res: Response) => {
   try {
     const { type, description, price, duration, addOns } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : '';
+    const image = req.file ? `https://royal-sheers-backend.onrender.com/uploads/${req.file.filename}` : '';
 
     const service = new Service({
       type,
