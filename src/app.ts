@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import mongoose, { ConnectOptions } from "mongoose";
 import router from "../royalSheersRoutes/sheersRoutes";
 import cors from "cors";
+import path from "path"; // Add this line to import the 'path' module
 
 // Load environment variables at the top
 require('dotenv').config();
@@ -11,6 +12,7 @@ const port = process.env.PORT;
 console.log(port);
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // CORS configuration
 const corsOptions = {

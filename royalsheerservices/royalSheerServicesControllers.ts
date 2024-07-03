@@ -22,6 +22,7 @@ export const createService = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getServices = async (req: Request, res: Response) => {
   try {
     const services = await Service.find({});
