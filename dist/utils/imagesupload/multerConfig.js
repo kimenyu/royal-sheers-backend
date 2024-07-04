@@ -3,15 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const multer_storage_cloudinary_1 = require("multer-storage-cloudinary");
 const multer_1 = __importDefault(require("multer"));
-// Set up storage configuration for multer
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Store files in the 'uploads' directory
+const cloudinaryConfig_1 = __importDefault(require("../../config/cloudinaryConfig"));
+// Configure Cloudinary storage
+const storage = new multer_storage_cloudinary_1.CloudinaryStorage({
+    cloudinary: cloudinaryConfig_1.default,
+    params: {
+        public_id: (req, file) => `${Date.now()}-${file.originalname}`,
     },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
 });
 // File filter to allow only certain file types
 const fileFilter = (req, file, cb) => {

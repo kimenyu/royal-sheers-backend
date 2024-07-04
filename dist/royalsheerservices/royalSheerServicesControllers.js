@@ -17,14 +17,14 @@ const serviceModel_1 = __importDefault(require("../models/serviceModel"));
 const createService = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { type, description, price, duration, addOns } = req.body;
-        const image = req.file ? req.file.path : undefined;
+        const image = req.file ? req.file.path : '';
         const service = new serviceModel_1.default({
             type,
             description,
             price,
             duration,
             addOns,
-            image
+            image,
         });
         yield service.save();
         res.status(201).send(service);

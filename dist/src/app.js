@@ -7,12 +7,14 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const sheersRoutes_1 = __importDefault(require("../royalSheersRoutes/sheersRoutes"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path")); // Add this line to import the 'path' module
 // Load environment variables at the top
 require('dotenv').config();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 console.log(port);
 app.use(express_1.default.json());
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../../uploads'))); // Adjust the path for the compiled directory
 // CORS configuration
 const corsOptions = {
     origin: "https://royal-sheers-backend.onrender.com",

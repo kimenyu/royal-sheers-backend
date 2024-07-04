@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import Service from '../models/serviceModel';
 import upload from '../utils/imagesupload/multerConfig';
 
-export const createService = async (req: Request, res: Response) => {
+interface MulterRequest extends Request {
+  file: any;
+}
+
+export const createService = async (req: MulterRequest, res: Response) => {
   try {
     const { type, description, price, duration, addOns } = req.body;
     const image = req.file ? req.file.path : '';
@@ -13,7 +17,7 @@ export const createService = async (req: Request, res: Response) => {
       price,
       duration,
       addOns,
-      image
+      image,
     });
     await service.save();
     res.status(201).send(service);
