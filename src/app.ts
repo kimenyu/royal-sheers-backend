@@ -12,7 +12,7 @@ const port = process.env.PORT;
 console.log(port);
 
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads')); // Serve uploaded images
 
 // CORS configuration
 const corsOptions = {
