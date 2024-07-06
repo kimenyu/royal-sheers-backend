@@ -11,7 +11,7 @@ interface IAppointment extends Document {
 
 const appointmentSchema: Schema<IAppointment> = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  staff: { type: Schema.Types.ObjectId, ref: 'Staff', required: true },
+  staff: { type: Schema.Types.ObjectId, ref: 'Staff' },
   services: [{ type: Schema.Types.ObjectId, ref: 'Service', required: true }],
   date: { type: Date, required: true },
   status: { type: String, enum: ['booked', 'completed', 'cancelled'], default: 'booked' },

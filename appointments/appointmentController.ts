@@ -42,6 +42,27 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
   }
 };
 
+
+
+export const createAppointmentWithoutStaff = async (req: Request, res: Response) => {
+  try {
+    const { user, services, date, status, totalPrice } = req.body;
+
+    const newAppointment = new Appointment({
+      user,
+      services,
+      date,
+      status: status || 'booked',
+      totalPrice: await calculateTotalPrice(services)
+    });
+
+    const savedAppointment = await newAppointment.save();
+    res.status(201).json(savedAppointment);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not create appointment', details: error.message });
+  }
+};
+
 const calculateTotalPrice = async (services: string[]) => {
   let totalPrice = 0;
   for (const serviceId of services) {
