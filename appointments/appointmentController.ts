@@ -53,7 +53,7 @@ export const createAppointmentWithoutStaff = async (req: AuthRequest, res: Respo
       return res.status(401).send({ error: 'Unauthorized' });
     }
     const newAppointment = new Appointment({
-      user: req.user._id,
+      user: user._id,
       services,
       date,
       totalPrice: await calculateTotalPrice(services)
