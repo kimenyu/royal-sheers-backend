@@ -55,7 +55,6 @@ export const createAppointmentWithoutStaff = async (req: AuthRequest, res: Respo
       user: req.user._id,
       services,
       date,
-      status: status || 'booked',
       totalPrice: await calculateTotalPrice(services)
     });
 
