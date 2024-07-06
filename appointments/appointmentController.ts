@@ -46,6 +46,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
 
 export const createAppointmentWithoutStaff = async (req: AuthRequest, res: Response) => {
   try {
+    const user = req.user;
     const { services, date } = req.body;
 
     if (!req.user) {
