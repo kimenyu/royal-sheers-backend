@@ -28,6 +28,7 @@ router.post('/staff/login', staffAccountControllers_1.loginStaff);
 router.post('/create/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointment);
 router.get('/list/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointments);
 router.delete('/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
+router.post('/create/appointments/withoutstaff', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointmentWithoutStaff);
 // Service Routes
 router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('image'), royalSheerServicesControllers_1.createService);
 router.get('/services', royalSheerServicesControllers_1.getServices);

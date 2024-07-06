@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelAppointment = exports.getAppointments = exports.createAppointment = void 0;
+exports.cancelAppointment = exports.getAppointments = exports.createAppointmentWithoutStaff = exports.createAppointment = void 0;
 const appointmentModel_1 = __importDefault(require("../models/appointmentModel"));
 const serviceModel_1 = __importDefault(require("../models/serviceModel"));
 const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,6 +44,27 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createAppointment = createAppointment;
+const createAppointmentWithoutStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user, services, date } = req.body;
+        if (!req.user) {
+            return res.status(401).send({ error: 'Unauthorized' });
+        }
+        const newAppointment = new appointmentModel_1.default({
+            user: req.user._id,
+            services,
+            date,
+            status: status || 'booked',
+            totalPrice: yield calculateTotalPrice(services)
+        });
+        const savedAppointment = yield newAppointment.save();
+        res.status(201).json(savedAppointment);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Could not create appointment', details: error.message });
+    }
+});
+exports.createAppointmentWithoutStaff = createAppointmentWithoutStaff;
 const calculateTotalPrice = (services) => __awaiter(void 0, void 0, void 0, function* () {
     let totalPrice = 0;
     for (const serviceId of services) {

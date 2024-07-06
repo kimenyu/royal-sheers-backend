@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const appointmentSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
-    staff: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Staff', required: true },
+    staff: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Staff' },
     services: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Service', required: true }],
     date: { type: Date, required: true },
     status: { type: String, enum: ['booked', 'completed', 'cancelled'], default: 'booked' },
