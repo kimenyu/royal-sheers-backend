@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import User from '../models/userModel'; // Adjust the import path according to your project structure
 
 dotenv.config();
+
+const jwtSecret = process.env.JWT_SECRET;
 
 interface DecodedToken {
   userId: string;
@@ -16,28 +19,32 @@ export interface AuthRequest extends Request {
   user?: DecodedToken;
 }
 
-export const userAuthMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
+export const userAuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.header('Authorization');
+
   if (!authHeader) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ message: 'Access denied, token missing' });
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken;
-    console.log(decoded);
+    const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
+    const user = await User.findById(decoded.userId);
 
-    if (decoded.role !== 'customer') {
-      return res.status(403).json({ error: 'Forbidden - Only customers are allowed' });
+    if (!user || user.role !== 'customer') {
+      return res.status(401).json({ message: 'Access denied, invalid token' });
     }
 
-    // Attach user information to req
     req.user = decoded;
-
     next();
   } catch (error) {
     console.error(error);
-    return res.status(401).json({ error: 'Unauthorized' });
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ message: 'Access denied, invalid token' });
+    }
+
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
