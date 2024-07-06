@@ -12,8 +12,11 @@ interface DecodedToken {
   exp: number;
 }
 
-export const userAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  // Get the JWT token from the Authorization header
+export interface AuthRequest extends Request {
+  user?: DecodedToken;
+}
+
+export const userAuthMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -22,19 +25,18 @@ export const userAuthMiddleware = (req: Request, res: Response, next: NextFuncti
   const token = authHeader.split(' ')[1];
 
   try {
-    // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken;
     console.log(decoded);
-    
-    // Check if the user role is "customer"
+
     if (decoded.role !== 'customer') {
-      return res.status(403).json({ error: 'Forbidden - Only customer are allowed' });
+      return res.status(403).json({ error: 'Forbidden - Only customers are allowed' });
     }
 
-    // If the user is a customer, proceed with the request
+    // Attach user information to req
+    req.user = decoded;
+
     next();
   } catch (error) {
-    // Handle JWT verification errors
     console.error(error);
     return res.status(401).json({ error: 'Unauthorized' });
   }
