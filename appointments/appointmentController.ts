@@ -98,12 +98,13 @@ export const getAppointments = async (req: AuthRequest, res: Response) => {
 
 export const cancelAppointment = async (req: AuthRequest, res: Response) => {
   try {
+    const user = req.user;
     const appointment = await Appointment.findById(req.params.id);
     if (!appointment) {
       return res.status(404).send({ error: 'Appointment not found' });
     }
 
-    if (appointment.user.toString() !== req.user._id.toString()) {
+    if (appointment.user.toString() !== user.userId.toString()) {
       return res.status(403).send({ error: 'Forbidden' });
     }
 
