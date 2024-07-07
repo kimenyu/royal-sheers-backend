@@ -84,11 +84,12 @@ const calculateTotalPrice = async (services: string[]) => {
 
 export const getAppointments = async (req: AuthRequest, res: Response) => {
   try {
+    const user = req.user;
     if (!req.user) {
       return res.status(401).send({ error: 'Unauthorized' });
     }
 
-    const appointments = await Appointment.find({ user: req.user._id }).populate('staff services');
+    const appointments = await Appointment.find({ user: user._id });
     res.send(appointments);
   } catch (error) {
     res.status(500).send(error);
