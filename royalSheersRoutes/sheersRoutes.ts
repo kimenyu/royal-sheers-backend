@@ -46,7 +46,7 @@ router.post('/staff/login', loginStaff);
 // Appointment Routes
 router.post('/create/appointments', userAuthMiddleware, createAppointment);
 router.get('/list/appointments', userAuthMiddleware, getAppointments);
-router.delete('/appointments/:id', userAuthMiddleware, cancelAppointment);
+router.delete('/cancel/appointments/:id', userAuthMiddleware, cancelAppointment);
 router.post('/create/appointments/withoutstaff', userAuthMiddleware, createAppointmentWithoutStaff);
 
 // Service Routes
