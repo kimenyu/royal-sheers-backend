@@ -4,6 +4,7 @@ import User from '../models/userModel';
 import Staff from '../models/staffModel';
 import Service from '../models/serviceModel';
 
+
 interface AuthRequest extends Request {
   params: any;
   body: { user: any; staff: any; services: any; date: any; };
@@ -44,16 +45,19 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
 
 
 
+
+
 export const createAppointmentWithoutStaff = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
     const { services, date } = req.body;
 
-    if (!req.user) {
+    if (!user) {
       return res.status(401).send({ error: 'Unauthorized' });
     }
+
     const newAppointment = new Appointment({
-      user: user._id,
+      user: user.userId, // Ensure this is the correct field
       services,
       date,
       totalPrice: await calculateTotalPrice(services)
@@ -76,6 +80,7 @@ const calculateTotalPrice = async (services: string[]) => {
   }
   return totalPrice;
 };
+
 
 export const getAppointments = async (req: AuthRequest, res: Response) => {
   try {
