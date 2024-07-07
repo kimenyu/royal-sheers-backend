@@ -89,7 +89,7 @@ export const getAppointments = async (req: AuthRequest, res: Response) => {
       return res.status(401).send({ error: 'Unauthorized' });
     }
 
-    const appointments = await Appointment.find({ user: user.Id }).populate('services');
+    const appointments = await Appointment.find({ user: user.userId }).populate('services');
     res.send(appointments);
   } catch (error) {
     res.status(500).send(error);
