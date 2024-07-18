@@ -3,47 +3,68 @@ import Appointment from '../models/appointmentModel';
 import User from '../models/userModel';
 import Staff from '../models/staffModel';
 import Service from '../models/serviceModel';
+import { AuthRequest } from '../middlewares/userAuthMiddleware';
 
-
-interface AuthRequest extends Request {
-  params: any;
-  body: { user: any; staff: any; services: any; date: any; };
-  user?: any;
-}
+const calculateTotalPrice = async (services: string[]): Promise<number> => {
+  let totalPrice = 0;
+  for (const serviceId of services) {
+    const service = await Service.findById(serviceId);
+    if (service) {
+      totalPrice += service.price;
+    }
+  }
+  return totalPrice;
+};
 
 export const createAppointment = async (req: AuthRequest, res: Response) => {
+  const { staff, services, date } = req.body;
+
   try {
-    const { user, staff, services, date } = req.body;
-    if (!req.user) {
-      return res.status(401).send({ error: 'Unauthorized' });
+    // Validate request body
+    if (!staff || !services || !date) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const existingAppointments = await Appointment.find({
-      staff,
-      date: { $eq: new Date(date) }
-    });
-
-    if (existingAppointments.length) {
-      return res.status(400).send({ error: 'Staff is not available at the selected time' });
+    if (!Array.isArray(services) || services.length === 0) {
+      return res.status(400).json({ error: 'Services must be an array with at least one service ID' });
     }
 
+    // Validate staff existence
+    const staffMember = await Staff.findById(staff);
+    if (!staffMember) {
+      return res.status(400).json({ error: 'Invalid staff ID' });
+    }
+
+    // Validate services existence
+    const serviceIds = await Service.find({ '_id': { $in: services } });
+    if (serviceIds.length !== services.length) {
+      return res.status(400).json({ error: 'One or more services are invalid' });
+    }
+
+    // Calculate total price
+    const totalPrice = await calculateTotalPrice(services);
+
+    // Create appointment
     const appointment = new Appointment({
-      user: req.user._id,
+      user: req.user?.userId,
       staff,
       services,
       date,
-      status: 'booked',
-      totalPrice: await calculateTotalPrice(services)
+      totalPrice,
+      status: 'booked'
     });
 
-    await appointment.save();
-    res.status(201).send(appointment);
+    const result = await appointment.save();
+
+    return res.status(201).json({
+      message: 'Appointment created successfully',
+      appointment: result
+    });
   } catch (error) {
-    res.status(400).send(error);
+    console.error(error);
+    return res.status(500).json({ error: error.message });
   }
 };
-
-
 
 
 
@@ -70,16 +91,7 @@ export const createAppointmentWithoutStaff = async (req: AuthRequest, res: Respo
   }
 };
 
-const calculateTotalPrice = async (services: string[]) => {
-  let totalPrice = 0;
-  for (const serviceId of services) {
-    const service = await Service.findById(serviceId);
-    if (service) {
-      totalPrice += service.price;
-    }
-  }
-  return totalPrice;
-};
+
 
 
 export const getAppointments = async (req: AuthRequest, res: Response) => {
