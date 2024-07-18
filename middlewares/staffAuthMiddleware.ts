@@ -12,29 +12,38 @@ interface DecodedToken {
   exp: number;
 }
 
-export const staffAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  // Get the JWT token from the Authorization header
+export interface StaffRequest extends Request {
+  staff: {
+    _id: string;
+    role: string;
+  };
+}
+
+export const staffAuthMiddleware = (req: StaffRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const token = authHeader.split(' ')[1];
+  
 
   try {
-    // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken;
-    console.log(decoded);
+    console.log('Decoded Token:', decoded); // For debugging purposes
     
-    // Check if the user role is "staff"
     if (decoded.role !== 'staff') {
       return res.status(403).json({ error: 'Forbidden - Only staff are allowed' });
     }
 
-    // If the user is a staff, proceed with the request
+    // Add decoded token to req.staff
+    req.staff = {
+      _id: decoded.userId,  // Assuming userId is used as staff ID
+      role: decoded.role,
+    };
+    
     next();
   } catch (error) {
-    // Handle JWT verification errors
     console.error(error);
     return res.status(401).json({ error: 'Unauthorized' });
   }
