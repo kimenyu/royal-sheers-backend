@@ -173,3 +173,15 @@ export const loginStaff = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+export const getAllStaff = (req: Request, res: Response) => {
+  Staff.find()
+    .then((staff) => {
+      res.status(200).json(staff);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    });
+}
