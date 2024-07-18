@@ -45,3 +45,13 @@ export const getStaffProfile = async (req: Request & { staff: any }, res: Respon
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+export const getAllStaffMembers = async (req: Request, res: Response) => {
+    try {
+        const staffMembers = await Staff.find();
+        res.json(staffMembers);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
