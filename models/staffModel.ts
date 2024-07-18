@@ -9,7 +9,11 @@ interface IStaff extends Document {
   phone?: string;
   isVerified: boolean;
   password: string;
-
+  availability: {
+    day: string;
+    startTime: string;
+    endTime: string;
+  }[];
   performanceMetrics: {
     ratings: number;
     reviewsCount: number;
@@ -25,6 +29,11 @@ const staffSchema: Schema<IStaff> = new Schema({
   role: { type: String, required: true, default: 'staff' },
   verificationCode: { type: String, required: true },
   isVerified: { type: Boolean, default: false },
+  availability: [{
+    day: { type: String, required: true },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true }
+  }],
   performanceMetrics: {
     ratings: { type: Number, default: 0 },
     reviewsCount: { type: Number, default: 0 }

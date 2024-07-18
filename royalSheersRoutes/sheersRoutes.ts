@@ -86,7 +86,7 @@ router.delete('/giftcards/:id', deleteGiftCard);
 
 // Staff Profile Routes
 
-router.post('/staff/profile', staffAuthMiddleware,  upload.single('profilePicture'), createStaffProfile);
+router.post('/staff/create/profile', staffAuthMiddleware,  upload.single('profilePicture'), createStaffProfile);
 router.get('/staff/profile/:id', staffAuthMiddleware, getStaffProfile);
 
 export default router;
