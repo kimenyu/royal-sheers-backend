@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -6,30 +15,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userAuthMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const userModel_1 = __importDefault(require("../models/userModel")); // Adjust the import path according to your project structure
 dotenv_1.default.config();
-const userAuthMiddleware = (req, res, next) => {
-    // Get the JWT token from the Authorization header
-    const authHeader = req.headers['authorization'];
+const jwtSecret = process.env.JWT_SECRET;
+const userAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.header('Authorization');
     if (!authHeader) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ message: 'Access denied, token missing' });
     }
     const token = authHeader.split(' ')[1];
     try {
-        // Verify the JWT token
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
-        // Check if the user role is "customer"
-        if (decoded.role !== 'customer') {
-            return res.status(403).json({ error: 'Forbidden - Only customer are allowed' });
+        const decoded = jsonwebtoken_1.default.verify(token, jwtSecret);
+        const user = yield userModel_1.default.findById(decoded.userId);
+        if (!user || user.role !== 'customer') {
+            return res.status(401).json({ message: 'Access denied, invalid token' });
         }
-        // If the user is a customer, proceed with the request
+        req.user = decoded;
         next();
     }
     catch (error) {
-        // Handle JWT verification errors
         console.error(error);
-        return res.status(401).json({ error: 'Unauthorized' });
+        if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
+            return res.status(401).json({ message: 'Access denied, invalid token' });
+        }
+        return res.status(500).json({ message: 'Internal server error' });
     }
-};
+});
 exports.userAuthMiddleware = userAuthMiddleware;
 //# sourceMappingURL=userAuthMiddleware.js.map

@@ -26,6 +26,8 @@ import {
 import {
   createStaff, verifyEmailStaff, loginStaff
 } from '../accounts/controllers/staffAccountControllers';
+import { createStaffProfile, getStaffProfile } from '../staffs/staffControllers';
+
 import upload from '../utils/imagesupload/multerConfig';
 const router = express.Router();
 
@@ -81,5 +83,10 @@ router.get('/giftcards', getGiftCards);
 router.get('/giftcards/:id', getGiftCard);
 router.patch('/giftcards/:id', updateGiftCard);
 router.delete('/giftcards/:id', deleteGiftCard);
+
+// Staff Profile Routes
+
+router.post('/staff/profile', staffAuthMiddleware,  upload.single('profilePicture'), createStaffProfile);
+router.get('/staff/profile/:id', staffAuthMiddleware, getStaffProfile);
 
 export default router;

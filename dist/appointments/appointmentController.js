@@ -46,15 +46,15 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.createAppointment = createAppointment;
 const createAppointmentWithoutStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { user, services, date } = req.body;
-        if (!req.user) {
+        const user = req.user;
+        const { services, date } = req.body;
+        if (!user) {
             return res.status(401).send({ error: 'Unauthorized' });
         }
         const newAppointment = new appointmentModel_1.default({
-            user: req.user._id,
+            user: user.userId, // Ensure this is the correct field
             services,
             date,
-            status: status || 'booked',
             totalPrice: yield calculateTotalPrice(services)
         });
         const savedAppointment = yield newAppointment.save();
@@ -77,10 +77,11 @@ const calculateTotalPrice = (services) => __awaiter(void 0, void 0, void 0, func
 });
 const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const user = req.user;
         if (!req.user) {
             return res.status(401).send({ error: 'Unauthorized' });
         }
-        const appointments = yield appointmentModel_1.default.find({ user: req.user._id }).populate('staff services');
+        const appointments = yield appointmentModel_1.default.find({ user: user.userId }).populate('services');
         res.send(appointments);
     }
     catch (error) {
@@ -90,11 +91,12 @@ const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getAppointments = getAppointments;
 const cancelAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const user = req.user;
         const appointment = yield appointmentModel_1.default.findById(req.params.id);
         if (!appointment) {
             return res.status(404).send({ error: 'Appointment not found' });
         }
-        if (appointment.user.toString() !== req.user._id.toString()) {
+        if (appointment.user.toString() !== user.userId.toString()) {
             return res.status(403).send({ error: 'Forbidden' });
         }
         appointment.status = 'cancelled';

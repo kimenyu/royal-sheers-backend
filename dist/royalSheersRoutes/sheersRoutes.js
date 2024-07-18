@@ -14,6 +14,7 @@ const memberContollers_1 = require("../members/memberContollers");
 const giftControllers_1 = require("../giftcards/giftControllers");
 const userAccountsControllers_1 = require("../accounts/controllers/userAccountsControllers");
 const staffAccountControllers_1 = require("../accounts/controllers/staffAccountControllers");
+const staffControllers_1 = require("../staffs/staffControllers");
 const multerConfig_1 = __importDefault(require("../utils/imagesupload/multerConfig"));
 const router = express_1.default.Router();
 // User Routes
@@ -27,7 +28,7 @@ router.post('/staff/login', staffAccountControllers_1.loginStaff);
 // Appointment Routes
 router.post('/create/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointment);
 router.get('/list/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointments);
-router.delete('/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
+router.delete('/cancel/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
 router.post('/create/appointments/withoutstaff', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointmentWithoutStaff);
 // Service Routes
 router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('image'), royalSheerServicesControllers_1.createService);
@@ -57,5 +58,8 @@ router.get('/giftcards', giftControllers_1.getGiftCards);
 router.get('/giftcards/:id', giftControllers_1.getGiftCard);
 router.patch('/giftcards/:id', giftControllers_1.updateGiftCard);
 router.delete('/giftcards/:id', giftControllers_1.deleteGiftCard);
+// Staff Profile Routes
+router.post('/staff/profile', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('profilePicture'), staffControllers_1.createStaffProfile);
+router.get('/staff/profile/:id', staffAuthMiddleware_1.staffAuthMiddleware, staffControllers_1.getStaffProfile);
 exports.default = router;
 //# sourceMappingURL=sheersRoutes.js.map
