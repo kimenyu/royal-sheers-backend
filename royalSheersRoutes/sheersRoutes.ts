@@ -90,6 +90,6 @@ router.delete('/giftcards/:id', deleteGiftCard);
 
 router.post('/staff/create/profile', staffAuthMiddleware,  upload.single('profilePicture'), createStaffProfile);
 router.get('/staff/profile/:id', staffAuthMiddleware, getStaffProfile);
-router.get('/staff/members', staffAuthMiddleware, getAllStaffMembers);
+router.get('/staff/members', getAllStaffMembers);
 
 export default router;
