@@ -34,7 +34,7 @@ export const getStaffProfile = async (req: Request & { staff: any }, res: Respon
 
     try {
         // Find the staff profile associated with the staff member
-        const staffProfile = await StaffProfile.findOne({ staff: staff._id });
+        const staffProfile = (await StaffProfile.findOne({ staff: staff._id })).populate('staff');
         if (!staffProfile) {
             return res.status(404).json({ error: 'Staff profile not found' });
         }
