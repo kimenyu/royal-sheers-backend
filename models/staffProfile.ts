@@ -10,6 +10,11 @@ interface IStaffProfile extends Document {
     linkedin?: string;
     instagram?: string;
   };
+  availability: {
+    day: string;
+    startTime: string;
+    endTime: string;
+  }[];
 }
 
 const staffProfileSchema: Schema<IStaffProfile> = new Schema({
@@ -21,7 +26,12 @@ const staffProfileSchema: Schema<IStaffProfile> = new Schema({
     facebook: { type: String, default: '' },
     linkedin: { type: String, default: '' },
     instagram: { type: String, default: '' }
-  }
+  },
+  availability: [{
+    day: { type: String },
+    startTime: { type: String },
+    endTime: { type: String }
+  }]
 });
 
 const StaffProfile = mongoose.model<IStaffProfile>('StaffProfile', staffProfileSchema);
