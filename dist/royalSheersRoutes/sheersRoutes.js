@@ -25,9 +25,11 @@ router.post('/user/login', userAccountsControllers_1.loginUser);
 router.post('/create/staff', staffAccountControllers_1.createStaff);
 router.post('/verify/staff/email', staffAccountControllers_1.verifyEmailStaff);
 router.post('/staff/login', staffAccountControllers_1.loginStaff);
+router.get('/staffs', staffAccountControllers_1.getAllStaff);
 // Appointment Routes
 router.post('/create/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointment);
 router.get('/list/appointments', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointments);
+router.get('/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointmentById);
 router.delete('/cancel/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
 router.post('/create/appointments/withoutstaff', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointmentWithoutStaff);
 // Service Routes
@@ -59,7 +61,8 @@ router.get('/giftcards/:id', giftControllers_1.getGiftCard);
 router.patch('/giftcards/:id', giftControllers_1.updateGiftCard);
 router.delete('/giftcards/:id', giftControllers_1.deleteGiftCard);
 // Staff Profile Routes
-router.post('/staff/profile', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('profilePicture'), staffControllers_1.createStaffProfile);
+router.post('/staff/create/profile', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('profilePicture'), staffControllers_1.createStaffProfile);
 router.get('/staff/profile/:id', staffAuthMiddleware_1.staffAuthMiddleware, staffControllers_1.getStaffProfile);
+router.get('/staff/members', staffControllers_1.getAllStaffMembers);
 exports.default = router;
 //# sourceMappingURL=sheersRoutes.js.map

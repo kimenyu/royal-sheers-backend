@@ -34,9 +34,9 @@ const staffSchema = new mongoose_1.Schema({
     verificationCode: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     availability: [{
-            day: { type: String },
-            startTime: { type: String },
-            endTime: { type: String }
+            day: { type: String, required: true },
+            startTime: { type: String, required: true },
+            endTime: { type: String, required: true }
         }],
     performanceMetrics: {
         ratings: { type: Number, default: 0 },

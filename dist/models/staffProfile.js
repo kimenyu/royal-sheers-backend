@@ -33,7 +33,7 @@ const staffProfileSchema = new mongoose_1.Schema({
         facebook: { type: String, default: '' },
         linkedin: { type: String, default: '' },
         instagram: { type: String, default: '' }
-    }
+    },
 });
 const StaffProfile = mongoose_1.default.model('StaffProfile', staffProfileSchema);
 exports.default = StaffProfile;

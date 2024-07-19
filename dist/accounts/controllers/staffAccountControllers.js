@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginStaff = exports.verifyEmailStaff = exports.createStaff = void 0;
+exports.getAllStaff = exports.loginStaff = exports.verifyEmailStaff = exports.createStaff = void 0;
 const staffModel_1 = __importDefault(require("../../models/staffModel"));
 const numParser_1 = __importDefault(require("../../utils/number-parser/numParser"));
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -60,7 +60,15 @@ const createStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             password: hashedPassword,
             verificationCode,
             isVerified: false,
-            availability: [],
+            availability: [
+                { day: 'Monday', startTime: '09:00', endTime: '21:00' },
+                { day: 'Tuesday', startTime: '09:00', endTime: '21:00' },
+                { day: 'Wednesday', startTime: '09:00', endTime: '21:00' },
+                { day: 'Thursday', startTime: '09:00', endTime: '21:00' },
+                { day: 'Friday', startTime: '09:00', endTime: '21:00' },
+                { day: 'Saturday', startTime: '09:00', endTime: '21:00' },
+                { day: 'Sunday', startTime: '09:00', endTime: '21:00' }
+            ],
             performanceMetrics: {
                 ratings: 0,
                 reviewsCount: 0
@@ -151,4 +159,15 @@ const loginStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.loginStaff = loginStaff;
+const getAllStaff = (req, res) => {
+    staffModel_1.default.find()
+        .then((staff) => {
+        res.status(200).json(staff);
+    })
+        .catch((error) => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    });
+};
+exports.getAllStaff = getAllStaff;
 //# sourceMappingURL=staffAccountControllers.js.map

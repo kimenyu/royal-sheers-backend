@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStaffProfile = exports.createStaffProfile = void 0;
+exports.getAllStaffMembers = exports.getStaffProfile = exports.createStaffProfile = void 0;
 const staffProfile_1 = __importDefault(require("../models/staffProfile"));
 const createStaffProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const staff = req.staff;
@@ -41,7 +41,7 @@ const getStaffProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     const staff = req.staff;
     try {
         // Find the staff profile associated with the staff member
-        const staffProfile = yield staffProfile_1.default.findOne({ staff: staff._id });
+        const staffProfile = (yield staffProfile_1.default.findOne({ staff: staff._id }));
         if (!staffProfile) {
             return res.status(404).json({ error: 'Staff profile not found' });
         }
@@ -53,4 +53,15 @@ const getStaffProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getStaffProfile = getStaffProfile;
+const getAllStaffMembers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const staffMembers = yield staffProfile_1.default.find();
+        res.json(staffMembers);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+exports.getAllStaffMembers = getAllStaffMembers;
 //# sourceMappingURL=staffControllers.js.map

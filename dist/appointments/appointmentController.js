@@ -12,35 +12,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelAppointment = exports.getAppointments = exports.createAppointmentWithoutStaff = exports.createAppointment = void 0;
+exports.cancelAppointment = exports.getAppointmentById = exports.getAppointments = exports.createAppointmentWithoutStaff = exports.createAppointment = void 0;
 const appointmentModel_1 = __importDefault(require("../models/appointmentModel"));
+const staffModel_1 = __importDefault(require("../models/staffModel"));
 const serviceModel_1 = __importDefault(require("../models/serviceModel"));
+const calculateTotalPrice = (services) => __awaiter(void 0, void 0, void 0, function* () {
+    let totalPrice = 0;
+    for (const serviceId of services) {
+        const service = yield serviceModel_1.default.findById(serviceId);
+        if (service) {
+            totalPrice += service.price;
+        }
+    }
+    return totalPrice;
+});
 const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { staff, services, date } = req.body;
     try {
-        const { user, staff, services, date } = req.body;
-        if (!req.user) {
-            return res.status(401).send({ error: 'Unauthorized' });
+        // Validate request body
+        if (!staff || !services || !date) {
+            return res.status(400).json({ error: 'Missing required fields' });
         }
-        const existingAppointments = yield appointmentModel_1.default.find({
-            staff,
-            date: { $eq: new Date(date) }
-        });
-        if (existingAppointments.length) {
-            return res.status(400).send({ error: 'Staff is not available at the selected time' });
+        if (!Array.isArray(services) || services.length === 0) {
+            return res.status(400).json({ error: 'Services must be an array with at least one service ID' });
         }
+        // Validate staff existence
+        const staffMember = yield staffModel_1.default.findById(staff);
+        if (!staffMember) {
+            return res.status(400).json({ error: 'Invalid staff ID' });
+        }
+        // Validate services existence
+        const serviceIds = yield serviceModel_1.default.find({ '_id': { $in: services } });
+        if (serviceIds.length !== services.length) {
+            return res.status(400).json({ error: 'One or more services are invalid' });
+        }
+        // Calculate total price
+        const totalPrice = yield calculateTotalPrice(services);
+        // Create appointment
         const appointment = new appointmentModel_1.default({
-            user: req.user._id,
+            user: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId,
             staff,
             services,
             date,
-            status: 'booked',
-            totalPrice: yield calculateTotalPrice(services)
+            totalPrice,
+            status: 'booked'
         });
-        yield appointment.save();
-        res.status(201).send(appointment);
+        const result = yield appointment.save();
+        return res.status(201).json({
+            message: 'Appointment created successfully',
+            appointment: result
+        });
     }
     catch (error) {
-        res.status(400).send(error);
+        console.error(error);
+        return res.status(500).json({ error: error.message });
     }
 });
 exports.createAppointment = createAppointment;
@@ -65,23 +91,13 @@ const createAppointmentWithoutStaff = (req, res) => __awaiter(void 0, void 0, vo
     }
 });
 exports.createAppointmentWithoutStaff = createAppointmentWithoutStaff;
-const calculateTotalPrice = (services) => __awaiter(void 0, void 0, void 0, function* () {
-    let totalPrice = 0;
-    for (const serviceId of services) {
-        const service = yield serviceModel_1.default.findById(serviceId);
-        if (service) {
-            totalPrice += service.price;
-        }
-    }
-    return totalPrice;
-});
 const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         if (!req.user) {
             return res.status(401).send({ error: 'Unauthorized' });
         }
-        const appointments = yield appointmentModel_1.default.find({ user: user.userId }).populate('services');
+        const appointments = yield appointmentModel_1.default.find({ user: user.userId }).populate('services').populate('staff');
         res.send(appointments);
     }
     catch (error) {
@@ -89,6 +105,23 @@ const getAppointments = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getAppointments = getAppointments;
+const getAppointmentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        if (!req.user) {
+            return res.status(401).send({ error: 'Unauthorized' });
+        }
+        const appointment = yield appointmentModel_1.default.findById(req.params.id).populate('services').populate('staff');
+        if (!appointment) {
+            return res.status(404).send({ error: 'Appointment not found' });
+        }
+        res.send(appointment);
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+});
+exports.getAppointmentById = getAppointmentById;
 const cancelAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;

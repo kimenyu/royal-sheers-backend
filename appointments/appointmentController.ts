@@ -101,12 +101,28 @@ export const getAppointments = async (req: AuthRequest, res: Response) => {
       return res.status(401).send({ error: 'Unauthorized' });
     }
 
-    const appointments = await Appointment.find({ user: user.userId }).populate('services');
+    const appointments = await Appointment.find({ user: user.userId }).populate('services').populate('staff');
     res.send(appointments);
   } catch (error) {
     res.status(500).send(error);
   }
 };
+
+export const getAppointmentById = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user;
+    if (!req.user) {
+      return res.status(401).send({ error: 'Unauthorized' });
+    }
+    const appointment = await Appointment.findById(req.params.id).populate('services').populate('staff');
+    if (!appointment) {
+      return res.status(404).send({ error: 'Appointment not found' });
+    }
+    res.send(appointment);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
 
 export const cancelAppointment = async (req: AuthRequest, res: Response) => {
   try {
