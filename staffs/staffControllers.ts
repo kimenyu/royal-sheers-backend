@@ -48,7 +48,7 @@ export const getStaffProfile = async (req: Request & { staff: any }, res: Respon
 
 export const getAllStaffMembers = async (req: Request, res: Response) => {
     try {
-        const staffMembers = await Staff.find();
+        const staffMembers = await StaffProfile.find();
         res.json(staffMembers);
     } catch (error) {
         console.error(error);
