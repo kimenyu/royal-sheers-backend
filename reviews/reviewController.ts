@@ -24,6 +24,10 @@ export const createReview = async (req: AuthRequest, res: Response) => {
       return res.status(403).send({ error: 'Forbidden' });
     }
 
+    if (appointment.status !== 'completed') {
+      return res.status(400).send({ error: 'Only completed appointments can be reviewed' });
+    }
+
     const review = new Review({
       user: req.user._id,
       staff: appointment.staff,
@@ -38,6 +42,7 @@ export const createReview = async (req: AuthRequest, res: Response) => {
     res.status(400).send(error);
   }
 };
+
 
 
 export const getReviews = async (req: Request, res: Response) => {
