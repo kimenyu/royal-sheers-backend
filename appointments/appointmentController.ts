@@ -150,3 +150,33 @@ export const cancelAppointment = async (req: AuthRequest, res: Response) => {
     res.status(500).send(error);
   }
 };
+
+
+
+
+export const completeAppointment = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user;
+    if (!req.user) {
+      return res.status(401).send({ error: 'Unauthorized' });
+    }
+
+    const { id } = req.params;
+
+    const appointment = await Appointment.findById(id);
+    if (!appointment) {
+      return res.status(404).send({ error: 'Appointment not found' });
+    }
+
+    if (appointment.user.toString() !== user.toString()) {
+      return res.status(403).send({ error: 'Forbidden' });
+    }
+
+    appointment.status = 'completed';
+    await appointment.save();
+
+    res.status(200).send(appointment);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
