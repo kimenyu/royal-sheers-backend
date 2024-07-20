@@ -55,3 +55,31 @@ export const getAllStaffMembers = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+
+
+// Controller to get staff profile by staff ID
+export const getStaffProfileById = async (req: Request, res: Response) => {
+  try {
+    const { staffId } = req.params;
+
+    // Validate the staff ID
+    if (!staffId) {
+      return res.status(400).json({ error: 'Staff ID is required' });
+    }
+
+    // Fetch the staff profile from the database
+    const staffProfile = await StaffProfile.findOne({ staff: staffId });
+
+    // Check if the profile exists
+    if (!staffProfile) {
+      return res.status(404).json({ error: 'Staff profile not found' });
+    }
+
+    // Return the staff profile
+    res.status(200).json(staffProfile);
+  } catch (error) {
+    console.error('Error fetching staff profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
