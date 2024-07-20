@@ -50,7 +50,7 @@ export const createReview = async (req: AuthRequest, res: Response) => {
 
 export const getReviews = async (req: Request, res: Response) => {
   try {
-    const reviews = await Review.find({}).populate('user staff service');
+    const reviews = await Review.find({});
     res.send(reviews);
   } catch (error) {
     res.status(500).send(error);
