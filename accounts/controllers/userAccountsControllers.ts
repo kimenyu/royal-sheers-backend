@@ -11,7 +11,7 @@ import { Request, Response } from 'express';
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET as string;
-const JWT_EXPIRATION_TIME = '1d';
+const JWT_EXPIRATION_TIME = '300d';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
