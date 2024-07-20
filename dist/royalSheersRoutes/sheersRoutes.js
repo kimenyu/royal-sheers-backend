@@ -32,6 +32,7 @@ router.get('/list/appointments', userAuthMiddleware_1.userAuthMiddleware, appoin
 router.get('/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.getAppointmentById);
 router.delete('/cancel/appointments/:id', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.cancelAppointment);
 router.post('/create/appointments/withoutstaff', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.createAppointmentWithoutStaff);
+router.post('/appointments/:id/complete', userAuthMiddleware_1.userAuthMiddleware, appointmentController_1.completeAppointment);
 // Service Routes
 router.post('/create/services', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('image'), royalSheerServicesControllers_1.createService);
 router.get('/services', royalSheerServicesControllers_1.getServices);
@@ -39,7 +40,7 @@ router.get('/services/:id', royalSheerServicesControllers_1.getService);
 router.patch('/services/:id', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('image'), royalSheerServicesControllers_1.updateService);
 router.delete('/services/delete/:id', staffAuthMiddleware_1.staffAuthMiddleware, royalSheerServicesControllers_1.deleteService);
 // Review Routes
-router.post('/reviews', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.createReview);
+router.post('/create/reviews', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.createReview);
 router.get('/reviews', reviewController_1.getReviews);
 router.get('/reviews/:id', reviewController_1.getReview);
 router.patch('/reviews/:id', userAuthMiddleware_1.userAuthMiddleware, reviewController_1.updateReview);

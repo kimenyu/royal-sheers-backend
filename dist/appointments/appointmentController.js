@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelAppointment = exports.getAppointmentById = exports.getAppointments = exports.createAppointmentWithoutStaff = exports.createAppointment = void 0;
+exports.completeAppointment = exports.cancelAppointment = exports.getAppointmentById = exports.getAppointments = exports.createAppointmentWithoutStaff = exports.createAppointment = void 0;
 const appointmentModel_1 = __importDefault(require("../models/appointmentModel"));
 const staffModel_1 = __importDefault(require("../models/staffModel"));
 const serviceModel_1 = __importDefault(require("../models/serviceModel"));
@@ -146,4 +146,27 @@ const cancelAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.cancelAppointment = cancelAppointment;
+const completeAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        if (!user) {
+            return res.status(401).send({ error: 'Unauthorized' });
+        }
+        const { id } = req.params;
+        const appointment = yield appointmentModel_1.default.findById(id);
+        if (!appointment) {
+            return res.status(404).send({ error: 'Appointment not found' });
+        }
+        if (appointment.user.toString() !== user.userId) {
+            return res.status(403).send({ error: 'Forbidden' });
+        }
+        appointment.status = 'completed';
+        yield appointment.save();
+        res.status(200).send(appointment);
+    }
+    catch (error) {
+        res.status(400).send(error);
+    }
+});
+exports.completeAppointment = completeAppointment;
 //# sourceMappingURL=appointmentController.js.map

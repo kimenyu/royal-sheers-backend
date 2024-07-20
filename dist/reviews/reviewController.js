@@ -21,15 +21,21 @@ const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!req.user) {
             return res.status(401).send({ error: 'Unauthorized' });
         }
+        if (!appointmentId || !rating) {
+            return res.status(400).send({ error: 'Appointment ID and rating are required' });
+        }
         const appointment = yield appointmentModel_1.default.findById(appointmentId);
         if (!appointment) {
             return res.status(404).send({ error: 'Appointment not found' });
         }
-        if (appointment.user.toString() !== req.user._id.toString()) {
+        if (appointment.user.toString() !== req.user.userId) {
             return res.status(403).send({ error: 'Forbidden' });
         }
+        if (appointment.status !== 'completed') {
+            return res.status(400).send({ error: 'Only completed appointments can be reviewed' });
+        }
         const review = new reviewModel_1.default({
-            user: req.user._id,
+            user: req.user.userId,
             staff: appointment.staff,
             appointment: appointment._id,
             rating,
@@ -39,13 +45,13 @@ const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(201).send(review);
     }
     catch (error) {
-        res.status(400).send(error);
+        res.status(400).send({ error: error.message });
     }
 });
 exports.createReview = createReview;
 const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const reviews = yield reviewModel_1.default.find({}).populate('user staff service');
+        const reviews = yield reviewModel_1.default.find({});
         res.send(reviews);
     }
     catch (error) {
