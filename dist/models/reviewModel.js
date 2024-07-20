@@ -27,7 +27,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const reviewSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     staff: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Staff', required: true },
-    service: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Service', required: true },
+    appointment: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Appointment', required: true },
     rating: { type: Number, required: true },
     comment: { type: String },
     date: { type: Date, default: Date.now }

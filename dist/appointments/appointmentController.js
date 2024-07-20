@@ -47,6 +47,11 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (serviceIds.length !== services.length) {
             return res.status(400).json({ error: 'One or more services are invalid' });
         }
+        // Validate date and time
+        const appointmentDate = new Date(date);
+        if (appointmentDate <= new Date()) {
+            return res.status(400).json({ error: 'Appointment date and time must be in the future' });
+        }
         // Calculate total price
         const totalPrice = yield calculateTotalPrice(services);
         // Create appointment

@@ -62,7 +62,7 @@ router.patch('/services/:id', staffAuthMiddleware, upload.single('image'),update
 router.delete('/services/delete/:id', staffAuthMiddleware, deleteService);
 
 // Review Routes
-router.post('/reviews', userAuthMiddleware, createReview);
+router.post('/create/reviews', userAuthMiddleware, createReview);
 router.get('/reviews', getReviews);
 router.get('/reviews/:id', getReview);
 router.patch('/reviews/:id', userAuthMiddleware, updateReview);

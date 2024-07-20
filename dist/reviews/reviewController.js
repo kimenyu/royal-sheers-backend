@@ -31,7 +31,7 @@ const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const review = new reviewModel_1.default({
             user: req.user._id,
             staff: appointment.staff,
-            service: appointment.services[0], // Assuming one service per appointment
+            appointment: appointment._id,
             rating,
             comment
         });

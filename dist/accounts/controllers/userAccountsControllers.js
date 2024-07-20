@@ -23,7 +23,7 @@ const verifyAccounts_1 = __importDefault(require("../../utils/verification/verif
 const nodemailer_1 = __importDefault(require("nodemailer"));
 dotenv_1.default.config();
 const jwtSecret = process.env.JWT_SECRET;
-const JWT_EXPIRATION_TIME = '1d';
+const JWT_EXPIRATION_TIME = '300d';
 const transporter = nodemailer_1.default.createTransport({
     service: 'gmail',
     auth: {
