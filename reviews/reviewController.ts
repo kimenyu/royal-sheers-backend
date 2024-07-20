@@ -27,7 +27,7 @@ export const createReview = async (req: AuthRequest, res: Response) => {
     const review = new Review({
       user: req.user._id,
       staff: appointment.staff,
-      service: appointment.services[0], // Assuming one service per appointment
+      appointment: appointment._id,
       rating,
       comment
     });
@@ -38,6 +38,7 @@ export const createReview = async (req: AuthRequest, res: Response) => {
     res.status(400).send(error);
   }
 };
+
 
 export const getReviews = async (req: Request, res: Response) => {
   try {
