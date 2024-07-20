@@ -41,6 +41,12 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'One or more services are invalid' });
     }
 
+    // Validate date and time
+    const appointmentDate = new Date(date);
+    if (appointmentDate <= new Date()) {
+      return res.status(400).json({ error: 'Appointment date and time must be in the future' });
+    }
+
     // Calculate total price
     const totalPrice = await calculateTotalPrice(services);
 
@@ -65,6 +71,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
 
 
 
