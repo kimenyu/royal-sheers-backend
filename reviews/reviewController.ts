@@ -7,7 +7,6 @@ interface AuthRequest extends Request {
   body: { appointmentId: any; rating: any; comment: any; };
   user?: any;
 }
-
 export const createReview = async (req: AuthRequest, res: Response) => {
   try {
     const { appointmentId, rating, comment } = req.body;
@@ -15,12 +14,16 @@ export const createReview = async (req: AuthRequest, res: Response) => {
       return res.status(401).send({ error: 'Unauthorized' });
     }
 
+    if (!appointmentId || !rating) {
+      return res.status(400).send({ error: 'Appointment ID and rating are required' });
+    }
+
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
       return res.status(404).send({ error: 'Appointment not found' });
     }
 
-    if (appointment.user.toString() !== req.user._id.toString()) {
+    if (appointment.user.toString() !== req.user.userId) {
       return res.status(403).send({ error: 'Forbidden' });
     }
 
@@ -29,7 +32,7 @@ export const createReview = async (req: AuthRequest, res: Response) => {
     }
 
     const review = new Review({
-      user: req.user._id,
+      user: req.user.userId,
       staff: appointment.staff,
       appointment: appointment._id,
       rating,
@@ -39,7 +42,7 @@ export const createReview = async (req: AuthRequest, res: Response) => {
     await review.save();
     res.status(201).send(review);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ error: error.message });
   }
 };
 
