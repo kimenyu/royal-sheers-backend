@@ -152,12 +152,10 @@ export const cancelAppointment = async (req: AuthRequest, res: Response) => {
 };
 
 
-
-
 export const completeAppointment = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
-    if (!req.user) {
+    if (!user) {
       return res.status(401).send({ error: 'Unauthorized' });
     }
 
@@ -168,7 +166,7 @@ export const completeAppointment = async (req: AuthRequest, res: Response) => {
       return res.status(404).send({ error: 'Appointment not found' });
     }
 
-    if (appointment.user.toString() !== user.toString()) {
+    if (appointment.user.toString() !== user.userId) {
       return res.status(403).send({ error: 'Forbidden' });
     }
 
@@ -180,3 +178,4 @@ export const completeAppointment = async (req: AuthRequest, res: Response) => {
     res.status(400).send(error);
   }
 };
+
