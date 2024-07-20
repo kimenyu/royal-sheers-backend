@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllStaffMembers = exports.getStaffProfile = exports.createStaffProfile = void 0;
+exports.getStaffProfileById = exports.getAllStaffMembers = exports.getStaffProfile = exports.createStaffProfile = void 0;
 const staffProfile_1 = __importDefault(require("../models/staffProfile"));
 const createStaffProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const staff = req.staff;
@@ -64,4 +64,27 @@ const getAllStaffMembers = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getAllStaffMembers = getAllStaffMembers;
+// Controller to get staff profile by staff ID
+const getStaffProfileById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { staffId } = req.params;
+        // Validate the staff ID
+        if (!staffId) {
+            return res.status(400).json({ error: 'Staff ID is required' });
+        }
+        // Fetch the staff profile from the database
+        const staffProfile = yield staffProfile_1.default.findOne({ staff: staffId });
+        // Check if the profile exists
+        if (!staffProfile) {
+            return res.status(404).json({ error: 'Staff profile not found' });
+        }
+        // Return the staff profile
+        res.status(200).json(staffProfile);
+    }
+    catch (error) {
+        console.error('Error fetching staff profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+exports.getStaffProfileById = getStaffProfileById;
 //# sourceMappingURL=staffControllers.js.map

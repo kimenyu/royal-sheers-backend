@@ -61,7 +61,7 @@ const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getReviews = getReviews;
 const getReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const review = yield reviewModel_1.default.findById(req.params.id).populate('user staff service');
+        const review = yield reviewModel_1.default.findById(req.params.id).populate('user').populate('staff').populate('appointment');
         if (!review) {
             return res.status(404).send({ error: 'Review not found' });
         }

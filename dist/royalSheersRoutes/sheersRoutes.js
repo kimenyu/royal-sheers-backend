@@ -63,7 +63,8 @@ router.patch('/giftcards/:id', giftControllers_1.updateGiftCard);
 router.delete('/giftcards/:id', giftControllers_1.deleteGiftCard);
 // Staff Profile Routes
 router.post('/staff/create/profile', staffAuthMiddleware_1.staffAuthMiddleware, multerConfig_1.default.single('profilePicture'), staffControllers_1.createStaffProfile);
-router.get('/staff/profile/:id', staffAuthMiddleware_1.staffAuthMiddleware, staffControllers_1.getStaffProfile);
+router.get('/staff/profile/:id', staffControllers_1.getStaffProfile);
 router.get('/staff/members', staffControllers_1.getAllStaffMembers);
+router.get('/staff/profile/all/:staffId', staffControllers_1.getStaffProfileById);
 exports.default = router;
 //# sourceMappingURL=sheersRoutes.js.map
