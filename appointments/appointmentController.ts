@@ -5,7 +5,6 @@ import Staff from '../models/staffModel';
 import Service from '../models/serviceModel';
 import { AuthRequest } from '../middlewares/userAuthMiddleware';
 
-
 const calculateTotalPrice = async (services: string[]): Promise<number> => {
   let totalPrice = 0;
   for (const serviceId of services) {
@@ -46,8 +45,8 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
     const appointmentDate = new Date(date);
     const currentDate = new Date();
 
-    if (appointmentDate <= currentDate) {
-      return res.status(400).json({ error: 'Appointment date and time must be in the future' });
+    if (appointmentDate.getTime() <= currentDate.getTime()) {
+      return res.status(400).json({ error: 'Appointment time must be in the future' });
     }
 
     // Calculate total price

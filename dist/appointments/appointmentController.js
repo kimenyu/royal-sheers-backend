@@ -49,8 +49,9 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         // Validate date and time
         const appointmentDate = new Date(date);
-        if (appointmentDate <= new Date()) {
-            return res.status(400).json({ error: 'Appointment date and time must be in the future' });
+        const currentDate = new Date();
+        if (appointmentDate.getTime() <= currentDate.getTime()) {
+            return res.status(400).json({ error: 'Appointment time must be in the future' });
         }
         // Calculate total price
         const totalPrice = yield calculateTotalPrice(services);
@@ -59,7 +60,7 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
             user: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId,
             staff,
             services,
-            date,
+            date: appointmentDate,
             totalPrice,
             status: 'booked'
         });
