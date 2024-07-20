@@ -59,7 +59,7 @@ export const getReviews = async (req: Request, res: Response) => {
 
 export const getReview = async (req: Request, res: Response) => {
   try {
-    const review = await (await Review.findById(req.params.id)).populated('user').populated('staff').populated('appointment');
+    const review = await Review.findById(req.params.id).populate('user').populate('staff').populate('appointment');
     if (!review) {
       return res.status(404).send({ error: 'Review not found' });
     }
