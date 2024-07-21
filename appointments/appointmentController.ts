@@ -2,8 +2,23 @@ import { Request, Response } from 'express';
 import Appointment from '../models/appointmentModel';
 import User from '../models/userModel';
 import Staff from '../models/staffModel';
-import Service from '../models/serviceModel';
+import Service from '../models/serviceModel'; // Import IService
 import { AuthRequest } from '../middlewares/userAuthMiddleware';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.SENDER_EMAIL,
+    pass: process.env.SENDER_PASS
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
 
 const calculateTotalPrice = async (services: string[]): Promise<number> => {
   let totalPrice = 0;
@@ -63,6 +78,77 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
     });
 
     const result = await appointment.save();
+
+    // Retrieve user information
+    const user = await User.findById(req.user?.userId);
+    if (!user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+
+    // Retrieve staff name and service names
+    const staffName = staffMember.name;
+    const serviceNames = await Service.find({ '_id': { $in: services } }).select('type').exec();
+    const serviceNamesString = serviceNames.map(service => service.type).join(', ');
+
+    // Send email to user
+    const userMailOptions = {
+      from: process.env.SENDER_EMAIL, // Sender address
+      to: user.email, // Recipient email
+      subject: 'Appointment Confirmation', // Subject line
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2>Hello ${user.username},</h2>
+          <p>Your appointment has been booked successfully. Here are the details:</p>
+          <ul>
+            <li><strong>Staff:</strong> ${staffName}</li>
+            <li><strong>Services:</strong> ${serviceNamesString}</li>
+            <li><strong>Date:</strong> ${appointmentDate.toLocaleString()}</li>
+            <li><strong>Total Price:</strong> $${totalPrice}</li>
+          </ul>
+          <p>We look forward to seeing you!</p>
+          <p>Regards,<br>Royal Sheers Team</p>
+        </div>
+      ` // HTML body
+    };
+
+    // Send email to staff
+    const staffMailOptions = {
+      from: process.env.SENDER_EMAIL, // Sender address
+      to: staffMember.email, // Staff email
+      subject: 'New Appointment Scheduled', // Subject line
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2>Hello ${staffName},</h2>
+          <p>A new appointment has been scheduled. Here are the details:</p>
+          <ul>
+            <li><strong>User:</strong> ${user.username}</li>
+            <li><strong>Services:</strong> ${serviceNamesString}</li>
+            <li><strong>Date:</strong> ${appointmentDate.toLocaleString()}</li>
+            <li><strong>Total Price:</strong> $${totalPrice}</li>
+          </ul>
+          <p>Please prepare accordingly.</p>
+          <p>Regards,<br>Royal Sheers Team</p>
+        </div>
+      ` // HTML body
+    };
+
+    transporter.sendMail(userMailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Failed to send appointment confirmation email to user" });
+      } else {
+        console.log('User email sent: ' + info.response);
+      }
+    });
+
+    transporter.sendMail(staffMailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Failed to send appointment details email to staff" });
+      } else {
+        console.log('Staff email sent: ' + info.response);
+      }
+    });
 
     return res.status(201).json({
       message: 'Appointment created successfully',
