@@ -1,6 +1,9 @@
 import express from 'express';
 import { staffAuthMiddleware } from '../middlewares/staffAuthMiddleware';
 import { userAuthMiddleware } from '../middlewares/userAuthMiddleware';
+import { adminAuthMiddleware } from '../middlewares/adminMiddleware';
+
+import { registerAdmin, loginAdmin} from '../accounts/controllers/adminAccountsController';
 import {
   createAppointment, getAppointments, cancelAppointment, createAppointmentWithoutStaff, getAppointmentById, completeAppointment, deleteAppointment
 } from '../appointments/appointmentController';
@@ -30,6 +33,11 @@ import { createStaffProfile, getStaffProfile, getAllStaffMembers, getStaffProfil
 
 import upload from '../utils/imagesupload/multerConfig';
 const router = express.Router();
+
+//admin routes
+
+router.post('/create/admin', registerAdmin);
+router.post('/login/admin', loginAdmin);
 
 // User Routes
 
