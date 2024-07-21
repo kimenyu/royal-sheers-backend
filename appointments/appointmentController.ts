@@ -243,6 +243,7 @@ export const cancelAppointment = async (req: AuthRequest, res: Response) => {
 };
 
 
+
 export const completeAppointment = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
@@ -261,12 +262,51 @@ export const completeAppointment = async (req: AuthRequest, res: Response) => {
       return res.status(403).send({ error: 'Forbidden' });
     }
 
+    // Update appointment status
     appointment.status = 'completed';
     await appointment.save();
 
-    res.status(200).send(appointment);
+    // Retrieve user information
+    const userRecord = await User.findById(user.userId);
+    if (!userRecord) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+
+    // Send thank-you message to the user
+    const thankYouMessage = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Thank You, ${userRecord.username}!</h2>
+        <p>We hope you enjoyed your recent appointment with us. Your satisfaction is our top priority, and we are thrilled to have had the opportunity to serve you.</p>
+        <p>Should you have any feedback or need further assistance, please do not hesitate to contact us.</p>
+        <p>Thank you for choosing Royal Sheers. We look forward to seeing you again!</p>
+        <p>Best regards,<br>Royal Sheers Team</p>
+      </div>
+    `;
+
+    // You can use a similar transporter setup as before to send this thank-you message
+    const userMailOptions = {
+      from: process.env.SENDER_EMAIL, // Sender address
+      to: userRecord.email, // Recipient email
+      subject: 'Thank You for Your Appointment', // Subject line
+      html: thankYouMessage // HTML body
+    };
+
+    transporter.sendMail(userMailOptions, (error, info) => {
+      if (error) {
+        console.error('Failed to send thank-you email:', error);
+      } else {
+        console.log('Thank-you email sent: ' + info.response);
+      }
+    });
+
+    res.status(200).send({
+      message: 'Appointment marked as completed. Thank you for your visit!',
+      appointment
+    });
   } catch (error) {
-    res.status(400).send(error);
+    console.error('Error completing appointment:', error);
+    res.status(500).send({ error: 'An error occurred while completing the appointment' });
   }
 };
+
 
