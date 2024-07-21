@@ -222,28 +222,70 @@ export const getAppointmentById = async (req: AuthRequest, res: Response) => {
   }
 }
 
+
+
+const sendCancellationEmail = async (userEmail: string, userName: string, appointmentDate: Date) => {
+  const cancellationMessage = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <h2>Hello ${userName},</h2>
+      <p>We regret to inform you that your appointment scheduled for ${appointmentDate.toLocaleString()} has been cancelled.</p>
+      <p>If you have any questions or need to reschedule, please contact us.</p>
+      <p>We apologize for any inconvenience this may cause and look forward to serving you in the future.</p>
+      <p>Best regards,<br>Royal Sheers Team</p>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: process.env.SENDER_EMAIL, // Sender address
+    to: userEmail, // Recipient email
+    subject: 'Appointment Cancellation', // Subject line
+    html: cancellationMessage, // HTML body
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Cancellation email sent to:', userEmail);
+  } catch (error) {
+    console.error('Failed to send cancellation email:', error);
+  }
+};
+
 export const cancelAppointment = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
-    const appointment = await Appointment.findById(req.params.id);
+    if (!user) {
+      return res.status(401).send({ error: 'Unauthorized' });
+    }
+
+    const appointment = await Appointment.findById(req.params.id).populate('user');
     if (!appointment) {
       return res.status(404).send({ error: 'Appointment not found' });
     }
-    if (appointment.status !== "booked"){
+
+    if (appointment.status !== "booked") {
       return res.status(400).send({ error: 'Cannot cancel an appointment in progress' });
     }
 
-    if (appointment.user.toString() !== user.userId.toString()) {
+    if (appointment.user._id.toString() !== user.userId.toString()) {
       return res.status(403).send({ error: 'Forbidden' });
     }
 
     appointment.status = 'cancelled';
     await appointment.save();
-    res.send(appointment);
+
+    // Send cancellation email to the user
+    const userRecord = await User.findById(user.userId);
+    if (userRecord) {
+      await sendCancellationEmail(userRecord.email, userRecord.username, appointment.date);
+    }
+
+    res.send({ message: 'Appointment cancelled successfully', appointment });
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error cancelling appointment:', error);
+    res.status(500).send({ error: 'An error occurred while cancelling the appointment' });
   }
 };
+
 
 
 
