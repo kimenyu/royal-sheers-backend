@@ -16,5 +16,5 @@ const adminSchema: Schema<IAdmin> = new Schema({
   phone: { type: String, required: true, unique: true}
 });
 
-const Admin = mongoose.model<IAdmin>('User', adminSchema);
+const Admin = mongoose.model<IAdmin>('Admin', adminSchema);
 export default Admin;
