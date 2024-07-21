@@ -105,7 +105,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
             <li><strong>Staff phone number:</strong> ${staffPhone}</li>
             <li><strong>Services:</strong> ${serviceNamesString}</li>
             <li><strong>Date:</strong> ${appointmentDate.toLocaleString()}</li>
-            <li><strong>Total Price:</strong> $${totalPrice}</li>
+            <li><strong>Total Price:</strong> ksh. ${totalPrice}</li>
           </ul>
           <p>We look forward to seeing you!</p>
           <p>Regards,<br>Royal Sheers Team</p>
@@ -127,7 +127,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
             <li><strong>Customer phone number: ${user.phone}</strong></li>
             <li><strong>Services:</strong> ${serviceNamesString}</li>
             <li><strong>Date:</strong> ${appointmentDate.toLocaleString()}</li>
-            <li><strong>Total Price:</strong> $${totalPrice}</li>
+            <li><strong>Total Price:</strong> ksh. ${totalPrice}</li>
           </ul>
           <p>Please prepare accordingly.</p>
           <p>Regards,<br>Royal Sheers Team</p>
