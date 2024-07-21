@@ -87,6 +87,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
 
     // Retrieve staff name and service names
     const staffName = staffMember.name;
+    const staffPhone = staffMember.phone;
     const serviceNames = await Service.find({ '_id': { $in: services } }).select('type').exec();
     const serviceNamesString = serviceNames.map(service => service.type).join(', ');
 
@@ -101,6 +102,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
           <p>Your appointment has been booked successfully. Here are the details:</p>
           <ul>
             <li><strong>Staff:</strong> ${staffName}</li>
+            <li><strong>Staff phone number:</strong> ${staffPhone}</li>
             <li><strong>Services:</strong> ${serviceNamesString}</li>
             <li><strong>Date:</strong> ${appointmentDate.toLocaleString()}</li>
             <li><strong>Total Price:</strong> $${totalPrice}</li>
@@ -122,6 +124,7 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
           <p>A new appointment has been scheduled. Here are the details:</p>
           <ul>
             <li><strong>User:</strong> ${user.username}</li>
+            <li><strong>Customer phone number: ${user.phone}</strong></li>
             <li><strong>Services:</strong> ${serviceNamesString}</li>
             <li><strong>Date:</strong> ${appointmentDate.toLocaleString()}</li>
             <li><strong>Total Price:</strong> $${totalPrice}</li>
