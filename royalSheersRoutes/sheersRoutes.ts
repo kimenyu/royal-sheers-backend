@@ -24,7 +24,7 @@ import {
 } from '../accounts/controllers/userAccountsControllers';
 
 import {
-  createStaff, verifyEmailStaff, loginStaff, getAllStaff
+  createStaff, verifyEmailStaff, loginStaff, getAllStaff, getStaffPerformanceMetrics
 } from '../accounts/controllers/staffAccountControllers';
 import { createStaffProfile, getStaffProfile, getAllStaffMembers, getStaffProfileById } from '../staffs/staffControllers';
 
@@ -43,8 +43,8 @@ router.post('/user/login', loginUser);
 router.post('/create/staff', createStaff);
 router.post('/verify/staff/email', verifyEmailStaff);
 router.post('/staff/login', loginStaff);
-
 router.get('/staffs', getAllStaff);
+router.get('staff/:staffId/performance', getStaffPerformanceMetrics);
 
 
 // Appointment Routes

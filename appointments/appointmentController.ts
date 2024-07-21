@@ -288,7 +288,6 @@ export const cancelAppointment = async (req: AuthRequest, res: Response) => {
 
 
 
-
 export const completeAppointment = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
