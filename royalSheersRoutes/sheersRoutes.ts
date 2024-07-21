@@ -2,7 +2,7 @@ import express from 'express';
 import { staffAuthMiddleware } from '../middlewares/staffAuthMiddleware';
 import { userAuthMiddleware } from '../middlewares/userAuthMiddleware';
 import {
-  createAppointment, getAppointments, cancelAppointment, createAppointmentWithoutStaff, getAppointmentById, completeAppointment
+  createAppointment, getAppointments, cancelAppointment, createAppointmentWithoutStaff, getAppointmentById, completeAppointment, deleteAppointment
 } from '../appointments/appointmentController';
 import {
   createService, getServices, getService, updateService, deleteService
@@ -50,10 +50,11 @@ router.get('/staffs', getAllStaff);
 // Appointment Routes
 router.post('/create/appointments', userAuthMiddleware, createAppointment);
 router.get('/list/appointments', userAuthMiddleware, getAppointments);
- router.get('/appointments/:id', userAuthMiddleware, getAppointmentById);
+router.get('/appointments/:id', userAuthMiddleware, getAppointmentById);
 router.delete('/cancel/appointments/:id', userAuthMiddleware, cancelAppointment);
 router.post('/create/appointments/withoutstaff', userAuthMiddleware, createAppointmentWithoutStaff);
 router.post('/appointments/:id/complete', userAuthMiddleware, completeAppointment);
+router.delete('/delete/appointments/:id', userAuthMiddleware, deleteAppointment);
 
 // Service Routes
 router.post('/create/services', staffAuthMiddleware,  upload.single('image'), createService);

@@ -310,3 +310,26 @@ export const completeAppointment = async (req: AuthRequest, res: Response) => {
 };
 
 
+export const deleteAppointment = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).send({ error: 'Unauthorized' });
+    }
+
+    const { id } = req.params;
+
+    const appointment = await Appointment.findById(id);
+    if (!appointment) {
+      return res.status(404).send({ error: 'Appointment not found' });
+    }
+    if (appointment.user.toString() !== user.userId) {
+      return res.status(403).send({ error: 'Forbidden' });
+    }
+    await Appointment.deleteOne({ _id: appointment._id });
+    res.send({ message: 'Appointment deleted successfully' });
+    } catch (error) {
+    console.error('Error deleting appointment:', error);
+    res.status(500).send({ error: 'An error occurred while deleting the appointment' });
+  }
+}
