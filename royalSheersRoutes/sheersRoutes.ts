@@ -44,7 +44,7 @@ router.post('/create/staff', createStaff);
 router.post('/verify/staff/email', verifyEmailStaff);
 router.post('/staff/login', loginStaff);
 router.get('/staffs', getAllStaff);
-router.get('staff/:staffId/performance', getStaffPerformanceMetrics);
+router.get('/staff/:staffId/performance', getStaffPerformanceMetrics);
 
 
 // Appointment Routes
