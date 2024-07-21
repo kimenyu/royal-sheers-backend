@@ -229,6 +229,9 @@ export const cancelAppointment = async (req: AuthRequest, res: Response) => {
     if (!appointment) {
       return res.status(404).send({ error: 'Appointment not found' });
     }
+    if (appointment.status !== "booked"){
+      return res.status(400).send({ error: 'Cannot cancel an appointment in progress' });
+    }
 
     if (appointment.user.toString() !== user.userId.toString()) {
       return res.status(403).send({ error: 'Forbidden' });
