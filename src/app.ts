@@ -52,5 +52,11 @@ try {
 app.get("/home", (req, res) => {
   res.json({ message: "Hello from Royal Sheers API!" });
 });
+// import heapdump from 'heapdump';
 
+// // Take a snapshot
+// heapdump.writeSnapshot((err, filename) => {
+//   if (err) console.error('Error writing snapshot:', err);
+//   else console.log('Heap snapshot written to', filename);
+// });
 app.use("/api/v1", router);

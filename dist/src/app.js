@@ -47,5 +47,13 @@ catch (error) {
 app.get("/home", (req, res) => {
     res.json({ message: "Hello from Royal Sheers API!" });
 });
+const heapdump_1 = __importDefault(require("heapdump"));
+// Take a snapshot
+heapdump_1.default.writeSnapshot((err, filename) => {
+    if (err)
+        console.error('Error writing snapshot:', err);
+    else
+        console.log('Heap snapshot written to', filename);
+});
 app.use("/api/v1", sheersRoutes_1.default);
 //# sourceMappingURL=app.js.map

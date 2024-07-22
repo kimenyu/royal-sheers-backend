@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "dist/src/app.js",
   "scripts": {
-    "start": "tsc && nodemon --max_old_space_size=4096 dist/src/app.js",
+    "start": "tsc && nodemon --max-old-space-size=4096 dist/src/app.js",
+    "start:dev": "tsc && nodemon --max-old-space-size=4096 dist/src/app.js",
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +26,7 @@
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
     "express-validator": "^7.1.0",
+    "heapdump": "^0.3.15",
     "iconv-lite": "^0.6.3",
     "install": "^0.13.0",
     "joi": "^17.13.3",
@@ -55,6 +57,7 @@
   "devDependencies": {
     "@eslint/js": "^9.5.0",
     "@types/express": "^4.17.21",
+    "@types/heapdump": "^0.3.4",
     "@types/multer": "^1.4.11",
     "eslint": "^9.5.0",
     "globals": "^15.6.0",
