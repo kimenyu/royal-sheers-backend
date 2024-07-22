@@ -30,6 +30,7 @@ import {
   createStaff, verifyEmailStaff, loginStaff, getAllStaff, getStaffPerformanceMetrics
 } from '../accounts/controllers/staffAccountControllers';
 import { createStaffProfile, getStaffProfile, getAllStaffMembers, getStaffProfileById } from '../staffs/staffControllers';
+import { createUserProfile, getUserProfile, updateUserProfile } from '../users/userControllers';
 
 import upload from '../utils/imagesupload/multerConfig';
 const router = express.Router();
@@ -70,6 +71,12 @@ router.get('/services', getServices);
 router.get('/services/:id',  getService);
 router.patch('/services/:id', staffAuthMiddleware, upload.single('image'),updateService);
 router.delete('/services/delete/:id', staffAuthMiddleware, deleteService);
+
+// User Profile Routes
+
+router.post('/user/profile', userAuthMiddleware, upload.single('profilePicture'), createUserProfile);
+router.get('/user/profile/:id', userAuthMiddleware, getUserProfile);
+router.patch('/user/profile/:id', userAuthMiddleware, upload.single('profilePicture'), updateUserProfile);
 
 // Review Routes
 router.post('/create/reviews', userAuthMiddleware, createReview);

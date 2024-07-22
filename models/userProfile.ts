@@ -22,7 +22,7 @@ interface IUserProfile extends Document {
 const userProfileSchema: Schema<IUserProfile> = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   bio: { type: String },
-  profilePicture: { type: String },
+  profilePicture: { type: String, required: true },
   address: {
     street: { type: String },
     city: { type: String },
