@@ -1,22 +1,22 @@
 import { Request, Response } from 'express';
 import UserProfile from '../models/userProfile';
 import { AuthRequest } from '../middlewares/userAuthMiddleware';
+import multer from 'multer';
 
 export const createUserProfile = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     const profilePicture = req.file ? req.file.path : '';
 
-
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const {
-      bio,
-      address,
-      socialLinks
-    } = req.body;
+    if (!profilePicture) {
+      return res.status(400).json({ message: 'Profile picture is required' });
+    }
+
+    const { bio, address, socialLinks } = req.body;
 
     // Check if a profile already exists for the user
     const existingProfile = await UserProfile.findOne({ user: userId });
@@ -36,6 +36,11 @@ export const createUserProfile = async (req: AuthRequest, res: Response) => {
     return res.status(201).json(savedProfile);
   } catch (error) {
     console.error('Error creating user profile:', error);
+    if (error instanceof multer.MulterError) {
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ message: 'File is too large. Maximum size is 50MB.' });
+      }
+    }
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
