@@ -20,3 +20,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjgyM
         "Conditioner"
     ]
 }
+
+"NRAK-JKWV34NZVATTQEGUM3290V9VCUM"
+
+[Net.ServicePointManager]::SecurityProtocol = 'tls12, tls'; $WebClient = New-Object System.Net.WebClient; $WebClient.DownloadFile("https://download.newrelic.com/install/newrelic-cli/scripts/install.ps1", "$env:TEMP\install.ps1"); & PowerShell.exe -ExecutionPolicy Bypass -File $env:TEMP\install.ps1; $env:NEW_RELIC_API_KEY='NRAK-JKWV34NZVATTQEGUM3290V9VCUM'; $env:NEW_RELIC_ACCOUNT_ID='4551593'; & 'C:\Program Files\New Relic\New Relic CLI\newrelic.exe' install

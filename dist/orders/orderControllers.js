@@ -38,9 +38,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.cancelOrder = exports.updateOrderStatus = exports.getOrderById = exports.getOrders = exports.createOrder = void 0;
 const orderModel_1 = __importStar(require("../models/orderModel"));
 const cartModel_1 = __importDefault(require("../models/cartModel"));
+const notificationModel_1 = __importDefault(require("../models/notificationModel"));
+// Helper function to create a notification
+const createNotification = (userId, message, type) => __awaiter(void 0, void 0, void 0, function* () {
+    const notification = new notificationModel_1.default({
+        user: userId,
+        message,
+        type
+    });
+    yield notification.save();
+});
 // Create Order
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     try {
         const cart = yield cartModel_1.default.findOne({ user: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }).populate('items.product');
         if (!cart || cart.items.length === 0) {
@@ -56,10 +66,12 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             user: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId,
             items: orderItems,
             totalPrice: cart.totalPrice,
-            status: orderModel_1.OrderStatus.PENDING // Use the enum here
+            status: orderModel_1.OrderStatus.PENDING
         });
         yield order.save();
         yield cartModel_1.default.deleteOne({ _id: cart._id });
+        // Create a notification for the new order
+        yield createNotification((_c = req.user) === null || _c === void 0 ? void 0 : _c.userId, `New order created with ID: ${order._id}`, 'success');
         res.status(201).json(order);
     }
     catch (error) {
@@ -105,7 +117,7 @@ const getOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getOrderById = getOrderById;
 // Update order status
 const updateOrderStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
         const orderId = req.params.orderId;
         const { status } = req.body;
@@ -116,6 +128,8 @@ const updateOrderStatus = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
+        // Create a notification for the status update
+        yield createNotification((_b = req.user) === null || _b === void 0 ? void 0 : _b.userId, `Order ${orderId} status updated to ${status}`, 'info');
         res.status(200).json(order);
     }
     catch (error) {
@@ -126,13 +140,15 @@ const updateOrderStatus = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.updateOrderStatus = updateOrderStatus;
 // Cancel order
 const cancelOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
         const orderId = req.params.orderId;
         const order = yield orderModel_1.default.findOneAndUpdate({ _id: orderId, user: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId, status: orderModel_1.OrderStatus.PENDING }, { status: orderModel_1.OrderStatus.CANCELLED }, { new: true });
         if (!order) {
             return res.status(404).json({ message: 'Order not found or cannot be cancelled' });
         }
+        // Create a notification for the cancelled order
+        yield createNotification((_b = req.user) === null || _b === void 0 ? void 0 : _b.userId, `Order ${orderId} has been cancelled`, 'warning');
         res.status(200).json(order);
     }
     catch (error) {

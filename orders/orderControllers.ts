@@ -3,6 +3,7 @@ import Order, { OrderStatus } from '../models/orderModel';
 import Cart, { ICartItem, ICart } from '../models/cartModel';
 import { AuthRequest } from '../middlewares/userAuthMiddleware';
 import { IProduct } from '../models/productModel';
+import Notification from '../models/notificationModel';
 
 interface IPopulatedCartItem {
   product: IProduct;
@@ -12,6 +13,16 @@ interface IPopulatedCartItem {
 interface IPopulatedCart extends Omit<ICart, 'items'> {
   items: IPopulatedCartItem[];
 }
+
+// Helper function to create a notification
+const createNotification = async (userId: string, message: string, type: 'info' | 'success' | 'warning' | 'error') => {
+  const notification = new Notification({
+    user: userId,
+    message,
+    type
+  });
+  await notification.save();
+};
 
 // Create Order
 export const createOrder = async (req: AuthRequest, res: Response) => {
@@ -33,11 +44,14 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       user: req.user?.userId,
       items: orderItems,
       totalPrice: cart.totalPrice,
-      status: OrderStatus.PENDING  // Use the enum here
+      status: OrderStatus.PENDING
     });
 
     await order.save();
     await Cart.deleteOne({ _id: cart._id });
+
+    // Create a notification for the new order
+    await createNotification(req.user?.userId as string, `New order created with ID: ${order._id}`, 'success');
 
     res.status(201).json(order);
   } catch (error) {
@@ -65,9 +79,9 @@ export const getOrderById = async (req: AuthRequest, res: Response) => {
   try {
     const orderId = req.params.orderId;
 
-    const order = await Order.findOne({ 
-      _id: orderId, 
-      user: req.user?.userId 
+    const order = await Order.findOne({
+      _id: orderId,
+      user: req.user?.userId
     }).populate('items.product');
 
     if (!order) {
@@ -101,6 +115,9 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
+    // Create a notification for the status update
+    await createNotification(req.user?.userId as string, `Order ${orderId} status updated to ${status}`, 'info');
+
     res.status(200).json(order);
   } catch (error) {
     console.error(error);
@@ -122,6 +139,9 @@ export const cancelOrder = async (req: AuthRequest, res: Response) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found or cannot be cancelled' });
     }
+
+    // Create a notification for the cancelled order
+    await createNotification(req.user?.userId as string, `Order ${orderId} has been cancelled`, 'warning');
 
     res.status(200).json(order);
   } catch (error) {

@@ -22,6 +22,7 @@ const multerConfig_1 = __importDefault(require("../utils/imagesupload/multerConf
 const productController_1 = require("../products/productController");
 const orderControllers_1 = require("../orders/orderControllers");
 const cartControllers_1 = require("../carts/cartControllers");
+const notificationController_1 = require("../notifications/notificationController");
 const router = express_1.default.Router();
 //admin routes
 router.post('/create/admin', adminAccountsController_1.registerAdmin);
@@ -97,5 +98,10 @@ router.patch('/order/:orderId/cancel', userAuthMiddleware_1.userAuthMiddleware, 
 router.post('/cart/add', userAuthMiddleware_1.userAuthMiddleware, cartControllers_1.addToCart);
 router.get('/my/cart', userAuthMiddleware_1.userAuthMiddleware, cartControllers_1.getCart);
 router.post('/mycart/remove', userAuthMiddleware_1.userAuthMiddleware, cartControllers_1.removeFromCart);
+//notification routes
+router.post('/create/notification', userAuthMiddleware_1.userAuthMiddleware, notificationController_1.createNotification);
+router.get('/my/notifications', userAuthMiddleware_1.userAuthMiddleware, notificationController_1.getUserNotifications);
+router.patch('/notification/:notificationId/read', userAuthMiddleware_1.userAuthMiddleware, notificationController_1.markNotificationAsRead);
+// Error handling middleware
 exports.default = router;
 //# sourceMappingURL=sheersRoutes.js.map

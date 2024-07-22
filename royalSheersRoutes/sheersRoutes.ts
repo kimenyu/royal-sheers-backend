@@ -41,6 +41,7 @@ import {
   cancelOrder 
 } from '../orders/orderControllers';
 import { addToCart, getCart, removeFromCart } from '../carts/cartControllers';
+import { createNotification, getUserNotifications, markNotificationAsRead } from '../notifications/notificationController';
 
 const router = express.Router();
 
@@ -137,5 +138,12 @@ router.patch('/order/:orderId/cancel', userAuthMiddleware, cancelOrder);
 router.post('/cart/add', userAuthMiddleware, addToCart);
 router.get('/my/cart', userAuthMiddleware, getCart);
 router.post('/mycart/remove', userAuthMiddleware, removeFromCart);
+
+//notification routes
+router.post('/create/notification', userAuthMiddleware, createNotification);
+router.get('/my/notifications', userAuthMiddleware, getUserNotifications);
+router.patch('/notification/:notificationId/read', userAuthMiddleware, markNotificationAsRead);
+
+// Error handling middleware
 
 export default router;
