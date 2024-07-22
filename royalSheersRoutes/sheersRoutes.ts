@@ -33,7 +33,14 @@ import { createStaffProfile, getStaffProfile, getAllStaffMembers, getStaffProfil
 import { createUserProfile, getUserProfile, updateUserProfile } from '../users/userControllers';
 import upload from '../utils/imagesupload/multerConfig';
 import { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../products/productController';
-
+import { 
+  createOrder, 
+  getOrders, 
+  getOrderById, 
+  updateOrderStatus, 
+  cancelOrder 
+} from '../orders/orderControllers';
+import { addToCart, getCart, removeFromCart } from '../carts/cartControllers';
 
 const router = express.Router();
 
@@ -118,4 +125,17 @@ router.get('/products/:id', getProductById);
 router.post('/create/products', adminAuthMiddleware, createProduct);
 router.put('/products/:id', adminAuthMiddleware, updateProduct);
 router.delete('/products/:id', adminAuthMiddleware, deleteProduct);
+
+// Order routes
+router.post('/create/orders', userAuthMiddleware, createOrder);
+router.get('/my/orders', userAuthMiddleware, getOrders);
+router.get('/order/:orderId', userAuthMiddleware, getOrderById);
+router.patch('/order/:orderId/status', userAuthMiddleware, updateOrderStatus);
+router.patch('/order/:orderId/cancel', userAuthMiddleware, cancelOrder);
+
+//cart routes
+router.post('/cart/add', userAuthMiddleware, addToCart);
+router.get('/my/cart', userAuthMiddleware, getCart);
+router.post('/mycart/remove', userAuthMiddleware, removeFromCart);
+
 export default router;

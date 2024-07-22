@@ -1,11 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-interface ICartItem extends Document {
+export interface ICartItem {
   product: mongoose.Types.ObjectId;
   quantity: number;
 }
 
-interface ICart extends Document {
+export interface ICart extends Document {
   user: mongoose.Types.ObjectId;
   items: ICartItem[];
   totalPrice: number;

@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllStaff = exports.loginStaff = exports.verifyEmailStaff = exports.createStaff = void 0;
+exports.getStaffPerformanceMetrics = exports.getAllStaff = exports.loginStaff = exports.verifyEmailStaff = exports.createStaff = void 0;
 const staffModel_1 = __importDefault(require("../../models/staffModel"));
+const reviewModel_1 = __importDefault(require("../../models/reviewModel"));
 const numParser_1 = __importDefault(require("../../utils/number-parser/numParser"));
 const email_validator_1 = __importDefault(require("email-validator"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -170,4 +171,39 @@ const getAllStaff = (req, res) => {
     });
 };
 exports.getAllStaff = getAllStaff;
+const getStaffPerformanceMetrics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { staffId } = req.params;
+        // Validate staff ID
+        if (!staffId) {
+            return res.status(400).send({ error: 'Staff ID is required' });
+        }
+        // Find the staff member
+        const staff = yield staffModel_1.default.findById(staffId);
+        if (!staff) {
+            return res.status(404).send({ error: 'Staff member not found' });
+        }
+        // Calculate performance metrics
+        const reviews = yield reviewModel_1.default.find({ staff: staffId });
+        const totalReviews = reviews.length;
+        const averageRating = totalReviews > 0
+            ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+            : 0;
+        // Update staff performance metrics
+        staff.performanceMetrics.ratings = averageRating;
+        staff.performanceMetrics.reviewsCount = totalReviews;
+        // Save updated staff
+        yield staff.save();
+        res.status(200).send({
+            staffId: staff._id,
+            averageRating: staff.performanceMetrics.ratings,
+            reviewsCount: staff.performanceMetrics.reviewsCount
+        });
+    }
+    catch (error) {
+        console.error('Error fetching staff performance metrics:', error);
+        res.status(500).send({ error: 'An error occurred while fetching performance metrics' });
+    }
+});
+exports.getStaffPerformanceMetrics = getStaffPerformanceMetrics;
 //# sourceMappingURL=staffAccountControllers.js.map

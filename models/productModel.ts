@@ -1,12 +1,14 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-interface IProduct extends Document {
+// In productModel.ts
+export interface IProduct extends Document {
   name: string;
   description?: string;
   price: number;
   stock: number;
   image?: string;
 }
+
 
 const productSchema: Schema<IProduct> = new Schema({
   name: { type: String, required: true },
