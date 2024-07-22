@@ -31,8 +31,10 @@ import {
 } from '../accounts/controllers/staffAccountControllers';
 import { createStaffProfile, getStaffProfile, getAllStaffMembers, getStaffProfileById } from '../staffs/staffControllers';
 import { createUserProfile, getUserProfile, updateUserProfile } from '../users/userControllers';
-
 import upload from '../utils/imagesupload/multerConfig';
+import { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../products/productController';
+
+
 const router = express.Router();
 
 //admin routes
@@ -41,7 +43,6 @@ router.post('/create/admin', registerAdmin);
 router.post('/login/admin', loginAdmin);
 
 // User Routes
-
 router.post('/create/user', createUser);
 router.post('/verify/user/email', verifyEmailUser);
 router.post('/user/login', loginUser);
@@ -111,4 +112,10 @@ router.get('/staff/profile/:id', getStaffProfile);
 router.get('/staff/members', getAllStaffMembers);
 router.get('/staff/profile/all/:staffId', getStaffProfileById);
 
+//products controllers
+router.get('/products', getAllProducts);
+router.get('/products/:id', getProductById);
+router.post('/create/products', adminAuthMiddleware, createProduct);
+router.put('/products/:id', adminAuthMiddleware, updateProduct);
+router.delete('/products/:id', adminAuthMiddleware, deleteProduct);
 export default router;
