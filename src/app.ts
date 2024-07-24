@@ -3,6 +3,8 @@ import mongoose, { ConnectOptions } from "mongoose";
 import router from "../royalSheersRoutes/sheersRoutes";
 import cors from "cors";
 import path from "path"; // Add this line to import the 'path' module
+import { client as redisClient, connectRedis } from "../utils/redisclient/myredis";
+
 
 // Load environment variables at the top
 require('dotenv').config();
@@ -24,6 +26,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 console.log("Starting the server...");
+connectRedis().catch(console.error);
 
 // Check for MONGO_URI
 if (!process.env.MONGO_URL) {

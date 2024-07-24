@@ -1,7 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { IProduct } from './productModel'; // Make sure to import IProduct
 
 export interface ICartItem {
-  product: mongoose.Types.ObjectId;
+  product: mongoose.Types.ObjectId | IProduct; // Allow both ObjectId and full Product
   quantity: number;
 }
 

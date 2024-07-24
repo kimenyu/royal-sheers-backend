@@ -15,6 +15,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.23.0",
     "@prisma/client": "^5.15.1",
+    "@redis/client": "^1.5.17",
     "africastalking-ts": "^0.0.3",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
@@ -49,6 +50,7 @@
     "passport": "^0.7.0",
     "pdfkit": "^0.15.0",
     "qs": "^6.12.1",
+    "redis": "^4.6.15",
     "request": "^2.88.2",
     "requests": "^0.3.0",
     "socket.io": "^4.7.5",
