@@ -1,7 +1,6 @@
 import express from 'express';
 import { staffAuthMiddleware } from '../middlewares/staffAuthMiddleware';
 import { userAuthMiddleware } from '../middlewares/userAuthMiddleware';
-import { adminAuthMiddleware } from '../middlewares/adminMiddleware';
 
 import { registerAdmin, loginAdmin} from '../accounts/controllers/adminAccountsController';
 import {
@@ -123,9 +122,9 @@ router.get('/staff/profile/all/:staffId', getStaffProfileById);
 //products controllers
 router.get('/products', getAllProducts);
 router.get('/products/:id', getProductById);
-router.post('/create/products', adminAuthMiddleware, createProduct);
-router.put('/products/:id', adminAuthMiddleware, updateProduct);
-router.delete('/products/:id', adminAuthMiddleware, deleteProduct);
+router.post('/create/products', createProduct);
+router.put('/products/:id', updateProduct);
+router.delete('/products/:id', deleteProduct);
 
 // Order routes
 router.post('/create/orders', userAuthMiddleware, createOrder);

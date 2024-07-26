@@ -1,63 +1,37 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import Admin from '../models/admin';
 
-dotenv.config();
-
-const jwtSecret = process.env.JWT_SECRET;
-
 interface DecodedToken {
-  adminId: string;  // Changed from userId to adminId
-  adminEmail: string;  // Changed from userEmail to adminEmail
+  id: string;
   role: string;
-  iat: number;
-  exp: number;
 }
 
-export interface AdminRequest extends Request {
-  admin?: {
-    _id: string;
-    role: string;
-  };
-}
-
-export const adminAuthMiddleware = async (req: AdminRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  if (!authHeader) {
-    return res.status(401).json({ error: 'Unauthorized - Token missing' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
+export const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
-    console.log('Decoded Token:', decoded);
+    // Get the token from the Authorization header
+    const token = req.headers.authorization?.split(' ')[1];
 
-    if (decoded.role !== 'admin') {
-      return res.status(403).json({ error: 'Forbidden - Only admins are allowed' });
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication required' });
     }
 
-    console.log('Searching for admin with ID:', decoded.adminId);
-    const admin = await Admin.findById(decoded.adminId);
-    console.log('Found admin:', admin);
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
 
-    if (!admin) {
-      return res.status(401).json({ error: 'Unauthorized - Admin not found' });
+    // Check if the user is an admin
+    const admin = await Admin.findById(decoded.id);
+
+    if (!admin || admin.role !== 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
     }
 
-    req.admin = {
-      _id: decoded.adminId,
-      role: decoded.role,
-    };
+    // Attach the admin to the request object
+    (req as any).admin = admin;
 
     next();
   } catch (error) {
-    console.error('Token verification error:', error);
-    if (error instanceof jwt.JsonWebTokenError) {
-      console.error('JWT Error details:', error.message);
-      return res.status(401).json({ error: 'Unauthorized - Invalid token' });
-    }
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error(error);
+    res.status(401).json({ message: 'Invalid or expired token' });
   }
 };

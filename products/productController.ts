@@ -1,15 +1,13 @@
 import Product from "../models/productModel";
 import { Request, Response } from 'express';
-import { AdminRequest } from '../middlewares/adminMiddleware';
 import upload from '../utils/imagesupload/multerConfig';
+import { adminMiddleware } from '../middlewares/adminMiddleware';
 
-
-// Create Product
 export const createProduct = [
+  adminMiddleware,
   upload.single('image'),
   async (req: Request, res: Response) => {
     try {
-
       const { name, description, price, stock } = req.body;
       const image = req.file?.path;
 
@@ -19,7 +17,7 @@ export const createProduct = [
         price, 
         stock, 
         image
-            });
+      });
       
       await product.save();
 
@@ -81,7 +79,7 @@ export const getProductById = async (req: Request, res: Response) => {
   // Update Product
 export const updateProduct = [
     upload.single('image'),
-    async (req: AdminRequest, res: Response) => {
+    async (req: Request, res: Response) => {
       try {
         const { name, description, price, stock } = req.body;
         const image = req.file?.path;
@@ -109,7 +107,7 @@ export const updateProduct = [
 ];
 
 // Delete Product
-export const deleteProduct = async (req: AdminRequest, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response) => {
     try {
       const product = await Product.findByIdAndDelete(req.params.id);
   
