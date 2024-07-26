@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Admin from '../models/admin'; // Adjust the import path as needed
+import Admin from '../models/admin';
 
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET;
 
 interface DecodedToken {
-  userId: string;
-  userEmail: string;
+  adminId: string;  // Changed from userId to adminId
+  adminEmail: string;  // Changed from userEmail to adminEmail
   role: string;
   iat: number;
   exp: number;
@@ -32,20 +32,19 @@ export const adminAuthMiddleware = async (req: AdminRequest, res: Response, next
 
   try {
     const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
-    console.log('Decoded Token:', decoded); // For debugging purposes
+    console.log('Decoded Token:', decoded);
 
     if (decoded.role !== 'admin') {
       return res.status(403).json({ error: 'Forbidden - Only admins are allowed' });
     }
 
-    const admin = await Admin.findById(decoded.userId);
+    const admin = await Admin.findById(decoded.adminId);  // Changed from userId to adminId
     if (!admin) {
       return res.status(401).json({ error: 'Unauthorized - Admin not found' });
     }
 
-    // Add decoded token to req.admin
     req.admin = {
-      _id: decoded.userId,
+      _id: decoded.adminId,  // Changed from userId to adminId
       role: decoded.role,
     };
 
