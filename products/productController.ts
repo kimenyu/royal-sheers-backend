@@ -9,6 +9,7 @@ export const createProduct = [
     upload.single('image'),
     async (req: AdminRequest, res: Response) => {
       try {
+        const admin = req.admin;
         const { name, description, price, stock } = req.body;
         const image = req.file?.path;
   

@@ -15,30 +15,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.adminAuthMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const admin_1 = __importDefault(require("../models/admin"));
+const admin_1 = __importDefault(require("../models/admin")); // Adjust the import path as needed
 dotenv_1.default.config();
 const jwtSecret = process.env.JWT_SECRET;
 const adminAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const authHeader = req.header('Authorization');
+    const authHeader = req.headers['authorization'];
     if (!authHeader) {
-        return res.status(401).json({ message: 'Access denied, token missing' });
+        return res.status(401).json({ error: 'Unauthorized - Token missing' });
     }
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jsonwebtoken_1.default.verify(token, jwtSecret);
-        const user = yield admin_1.default.findById(decoded.userId);
-        if (!user || user.role !== 'admin') {
-            return res.status(401).json({ message: 'Access denied, invalid token' });
+        console.log('Decoded Token:', decoded); // For debugging purposes
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ error: 'Forbidden - Only admins are allowed' });
         }
-        req.user = decoded;
+        const admin = yield admin_1.default.findById(decoded.userId);
+        if (!admin) {
+            return res.status(401).json({ error: 'Unauthorized - Admin not found' });
+        }
+        // Add decoded token to req.admin
+        req.admin = {
+            _id: decoded.userId,
+            role: decoded.role,
+        };
         next();
     }
     catch (error) {
-        console.error(error);
+        console.error('Token verification error:', error);
         if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
-            return res.status(401).json({ message: 'Access denied, invalid token' });
+            console.error('JWT Error details:', error.message);
+            return res.status(401).json({ error: 'Unauthorized - Invalid token' });
         }
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 exports.adminAuthMiddleware = adminAuthMiddleware;
