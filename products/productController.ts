@@ -29,6 +29,12 @@ export const createProduct = [
       await product.save();
 
       res.status(201).json(product);
+      console.log('Full request:', {
+        headers: req.headers,
+        body: req.body,
+        params: req.params,
+        query: req.query
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });

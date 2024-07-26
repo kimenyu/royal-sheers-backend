@@ -38,13 +38,16 @@ export const adminAuthMiddleware = async (req: AdminRequest, res: Response, next
       return res.status(403).json({ error: 'Forbidden - Only admins are allowed' });
     }
 
-    const admin = await Admin.findById(decoded.adminId);  // Changed from userId to adminId
+    console.log('Searching for admin with ID:', decoded.adminId);
+    const admin = await Admin.findById(decoded.adminId);
+    console.log('Found admin:', admin);
+
     if (!admin) {
       return res.status(401).json({ error: 'Unauthorized - Admin not found' });
     }
 
     req.admin = {
-      _id: decoded.adminId,  // Changed from userId to adminId
+      _id: decoded.adminId,
       role: decoded.role,
     };
 
