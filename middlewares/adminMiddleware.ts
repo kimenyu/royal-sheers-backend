@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Admin from '../models/admin';
+import Admin from '../models/admin'; // Adjust the import path as needed
+
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -15,35 +16,46 @@ interface DecodedToken {
 }
 
 export interface AdminRequest extends Request {
-  user?: DecodedToken;
+  admin?: {
+    _id: string;
+    role: string;
+  };
 }
 
 export const adminAuthMiddleware = async (req: AdminRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.header('Authorization');
-
+  const authHeader = req.headers['authorization'];
   if (!authHeader) {
-    return res.status(401).json({ message: 'Access denied, token missing' });
+    return res.status(401).json({ error: 'Unauthorized - Token missing' });
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
     const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
-    const user = await Admin.findById(decoded.userId);
+    console.log('Decoded Token:', decoded); // For debugging purposes
 
-    if (!user || user.role !== 'admin') {
-      return res.status(401).json({ message: 'Access denied, invalid token' });
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden - Only admins are allowed' });
     }
 
-    req.user = decoded;
+    const admin = await Admin.findById(decoded.userId);
+    if (!admin) {
+      return res.status(401).json({ error: 'Unauthorized - Admin not found' });
+    }
+
+    // Add decoded token to req.admin
+    req.admin = {
+      _id: decoded.userId,
+      role: decoded.role,
+    };
+
     next();
   } catch (error) {
-    console.error(error);
-
+    console.error('Token verification error:', error);
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ message: 'Access denied, invalid token' });
+      console.error('JWT Error details:', error.message);
+      return res.status(401).json({ error: 'Unauthorized - Invalid token' });
     }
-
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
