@@ -10,6 +10,12 @@ export const createProduct = [
   async (req: AdminRequest, res: Response) => {
     try {
       const admin = req.admin;
+      console.log('Full request:', {
+        headers: req.headers,
+        body: req.body,
+        params: req.params,
+        query: req.query
+      });
       if (!admin) {
         return res.status(401).json({ error: 'Unauthorized - Admin not found' });
       }
@@ -29,12 +35,7 @@ export const createProduct = [
       await product.save();
 
       res.status(201).json(product);
-      console.log('Full request:', {
-        headers: req.headers,
-        body: req.body,
-        params: req.params,
-        query: req.query
-      });
+      
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
