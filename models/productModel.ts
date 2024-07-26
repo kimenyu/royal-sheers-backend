@@ -17,8 +17,6 @@ const productSchema: Schema<IProduct> = new Schema({
   price: { type: Number, required: true },
   stock: { type: Number, required: true },
   image: { type: String },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'Admin', required: true }
-
 });
 
 const Product = mongoose.model<IProduct>('Product', productSchema);

@@ -7,18 +7,8 @@ import upload from '../utils/imagesupload/multerConfig';
 // Create Product
 export const createProduct = [
   upload.single('image'),
-  async (req: AdminRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     try {
-      const admin = req.admin;
-      console.log('Full request:', {
-        headers: req.headers,
-        body: req.body,
-        params: req.params,
-        query: req.query
-      });
-      if (!admin) {
-        return res.status(401).json({ error: 'Unauthorized - Admin not found' });
-      }
 
       const { name, description, price, stock } = req.body;
       const image = req.file?.path;
@@ -28,9 +18,8 @@ export const createProduct = [
         description, 
         price, 
         stock, 
-        image,
-        createdBy: admin._id  // Add this line to track which admin created the product
-      });
+        image
+            });
       
       await product.save();
 
