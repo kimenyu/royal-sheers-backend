@@ -18,24 +18,28 @@ const admin_1 = __importDefault(require("../models/admin"));
 const adminMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        // Get the token from the Authorization header
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         if (!token) {
+            console.log('No token provided');
             return res.status(401).json({ message: 'Authentication required' });
         }
-        // Verify the token
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        // Check if the user is an admin
+        console.log('Decoded token:', decoded);
         const admin = yield admin_1.default.findById(decoded.id);
-        if (!admin || admin.role !== 'admin') {
+        console.log('Found admin:', admin);
+        if (!admin) {
+            console.log('No admin found with id:', decoded.id);
             return res.status(403).json({ message: 'Admin access required' });
         }
-        // Attach the admin to the request object
+        if (admin.role !== 'admin') {
+            console.log('User role is not admin:', admin.role);
+            return res.status(403).json({ message: 'Admin access required' });
+        }
         req.admin = admin;
         next();
     }
     catch (error) {
-        console.error(error);
+        console.error('Error in admin middleware:', error);
         res.status(401).json({ message: 'Invalid or expired token' });
     }
 });

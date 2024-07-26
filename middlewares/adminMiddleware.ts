@@ -9,29 +9,33 @@ interface DecodedToken {
 
 export const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Get the token from the Authorization header
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
+      console.log('No token provided');
       return res.status(401).json({ message: 'Authentication required' });
     }
 
-    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
+    console.log('Decoded token:', decoded);
 
-    // Check if the user is an admin
     const admin = await Admin.findById(decoded.id);
+    console.log('Found admin:', admin);
 
-    if (!admin || admin.role !== 'admin') {
+    if (!admin) {
+      console.log('No admin found with id:', decoded.id);
       return res.status(403).json({ message: 'Admin access required' });
     }
 
-    // Attach the admin to the request object
-    (req as any).admin = admin;
+    if (admin.role !== 'admin') {
+      console.log('User role is not admin:', admin.role);
+      return res.status(403).json({ message: 'Admin access required' });
+    }
 
+    (req as any).admin = admin;
     next();
   } catch (error) {
-    console.error(error);
+    console.error('Error in admin middleware:', error);
     res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
