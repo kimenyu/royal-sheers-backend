@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const staffAuthMiddleware_1 = require("../middlewares/staffAuthMiddleware");
 const userAuthMiddleware_1 = require("../middlewares/userAuthMiddleware");
-const adminMiddleware_1 = require("../middlewares/adminMiddleware");
 const adminAccountsController_1 = require("../accounts/controllers/adminAccountsController");
 const appointmentController_1 = require("../appointments/appointmentController");
 const royalSheerServicesControllers_1 = require("../royalsheerservices/royalSheerServicesControllers");
@@ -85,9 +84,9 @@ router.get('/staff/profile/all/:staffId', staffControllers_1.getStaffProfileById
 //products controllers
 router.get('/products', productController_1.getAllProducts);
 router.get('/products/:id', productController_1.getProductById);
-router.post('/create/products', adminMiddleware_1.adminAuthMiddleware, productController_1.createProduct);
-router.put('/products/:id', adminMiddleware_1.adminAuthMiddleware, productController_1.updateProduct);
-router.delete('/products/:id', adminMiddleware_1.adminAuthMiddleware, productController_1.deleteProduct);
+router.post('/create/products', productController_1.createProduct);
+router.put('/products/:id', productController_1.updateProduct);
+router.delete('/products/:id', productController_1.deleteProduct);
 // Order routes
 router.post('/create/orders', userAuthMiddleware_1.userAuthMiddleware, orderControllers_1.createOrder);
 router.get('/my/orders', userAuthMiddleware_1.userAuthMiddleware, orderControllers_1.getOrders);

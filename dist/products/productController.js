@@ -15,15 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.createProduct = void 0;
 const productModel_1 = __importDefault(require("../models/productModel"));
 const multerConfig_1 = __importDefault(require("../utils/imagesupload/multerConfig"));
-// Create Product
+const adminMiddleware_1 = require("../middlewares/adminMiddleware");
 exports.createProduct = [
+    adminMiddleware_1.adminMiddleware,
     multerConfig_1.default.single('image'),
     (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         try {
             const { name, description, price, stock } = req.body;
             const image = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
-            const product = new productModel_1.default({ name, description, price, stock, image });
+            const product = new productModel_1.default({
+                name,
+                description,
+                price,
+                stock,
+                image
+            });
             yield product.save();
             res.status(201).json(product);
         }

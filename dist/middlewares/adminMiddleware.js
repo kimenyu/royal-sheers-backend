@@ -12,43 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminAuthMiddleware = void 0;
+exports.adminMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const admin_1 = __importDefault(require("../models/admin")); // Adjust the import path as needed
-dotenv_1.default.config();
-const jwtSecret = process.env.JWT_SECRET;
-const adminAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-        return res.status(401).json({ error: 'Unauthorized - Token missing' });
-    }
-    const token = authHeader.split(' ')[1];
+const admin_1 = __importDefault(require("../models/admin"));
+const adminMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, jwtSecret);
-        console.log('Decoded Token:', decoded); // For debugging purposes
-        if (decoded.role !== 'admin') {
-            return res.status(403).json({ error: 'Forbidden - Only admins are allowed' });
+        // Get the token from the Authorization header
+        const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ message: 'Authentication required' });
         }
-        const admin = yield admin_1.default.findById(decoded.userId);
-        if (!admin) {
-            return res.status(401).json({ error: 'Unauthorized - Admin not found' });
+        // Verify the token
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        // Check if the user is an admin
+        const admin = yield admin_1.default.findById(decoded.id);
+        if (!admin || admin.role !== 'admin') {
+            return res.status(403).json({ message: 'Admin access required' });
         }
-        // Add decoded token to req.admin
-        req.admin = {
-            _id: decoded.userId,
-            role: decoded.role,
-        };
+        // Attach the admin to the request object
+        req.admin = admin;
         next();
     }
     catch (error) {
-        console.error('Token verification error:', error);
-        if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
-            console.error('JWT Error details:', error.message);
-            return res.status(401).json({ error: 'Unauthorized - Invalid token' });
-        }
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error(error);
+        res.status(401).json({ message: 'Invalid or expired token' });
     }
 });
-exports.adminAuthMiddleware = adminAuthMiddleware;
+exports.adminMiddleware = adminMiddleware;
 //# sourceMappingURL=adminMiddleware.js.map
