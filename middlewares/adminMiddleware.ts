@@ -3,8 +3,11 @@ import jwt from 'jsonwebtoken';
 import Admin from '../models/admin';
 
 interface DecodedToken {
-  id: string;
+  adminId: string;
+  adminEmail: string;
   role: string;
+  iat: number;
+  exp: number;
 }
 
 export const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,11 +22,11 @@ export const adminMiddleware = async (req: Request, res: Response, next: NextFun
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
     console.log('Decoded token:', decoded);
 
-    const admin = await Admin.findById(decoded.id);
+    const admin = await Admin.findById(decoded.adminId);
     console.log('Found admin:', admin);
 
     if (!admin) {
-      console.log('No admin found with id:', decoded.id);
+      console.log('No admin found with id:', decoded.adminId);
       return res.status(403).json({ message: 'Admin access required' });
     }
 

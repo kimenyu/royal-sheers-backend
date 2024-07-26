@@ -25,10 +25,10 @@ const adminMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         }
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         console.log('Decoded token:', decoded);
-        const admin = yield admin_1.default.findById(decoded.id);
+        const admin = yield admin_1.default.findById(decoded.adminId);
         console.log('Found admin:', admin);
         if (!admin) {
-            console.log('No admin found with id:', decoded.id);
+            console.log('No admin found with id:', decoded.adminId);
             return res.status(403).json({ message: 'Admin access required' });
         }
         if (admin.role !== 'admin') {
