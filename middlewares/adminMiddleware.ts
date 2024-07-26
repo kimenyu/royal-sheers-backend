@@ -15,11 +15,11 @@ interface DecodedToken {
   exp: number;
 }
 
-export interface AuthRequest extends Request {
+export interface AdminRequest extends Request {
   user?: DecodedToken;
 }
 
-export const adminAuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const adminAuthMiddleware = async (req: AdminRequest, res: Response, next: NextFunction) => {
   const authHeader = req.header('Authorization');
   if (!authHeader) {
     console.log('Token missing');
