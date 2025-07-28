@@ -47,8 +47,8 @@ royalsheers/
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/kimenyu/royalsheers.git
-   cd royalsheers
+   git clone https://github.com/kimenyu/royal-sheers-backend.git
+   cd royal-sheers-backend
    ```
 
 2. Install dependencies:
