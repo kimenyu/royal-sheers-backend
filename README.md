@@ -2,19 +2,19 @@
 
 Royal Sheers is a full-featured backend system built with TypeScript, Express.js, and MongoDB. It powers a modern barbershop and eCommerce platform, offering online appointment booking, staff management, loyalty systems, gifting, product orders, and more.
 
-## 🚀 Features
+##  Features
 
-- 🔐 JWT-based Authentication for Clients and Staff
-- ✂️ Online Booking & Appointment Scheduling
-- 🛍️ Product Listings and Shopping Cart
-- 🧑‍💼 Staff Management with Availability Control
-- 🎁 Digital Gift Cards & Loyalty Points System
-- 📦 Order Tracking & Notifications
-- 📬 Email & Push Notifications
-- 🌐 Scalable REST API structure
-- 📊 Admin Dashboard-ready
+-  JWT-based Authentication for Clients and Staff
+-  Online Booking & Appointment Scheduling
+- Product Listings and Shopping Cart
+-  Staff Management with Availability Control
+-  Digital Gift Cards & Loyalty Points System
+-  Order Tracking & Notifications
+-  Email & Push Notifications
+- Scalable REST API structure
+-  Admin Dashboard-ready
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Node.js** + **Express.js**
 - **TypeScript**
@@ -23,7 +23,7 @@ Royal Sheers is a full-featured backend system built with TypeScript, Express.js
 - **JWT** for authentication
 - **ESLint**, **Prettier** for code quality
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 royalsheers/
@@ -43,7 +43,7 @@ royalsheers/
 ├── src/                 # Entry point and routing
 ```
 
-## ⚙️ Installation
+##  Installation
 
 1. Clone the repo:
    ```bash
@@ -71,15 +71,15 @@ royalsheers/
    npm run start
    ```
 
-## 🔍 Testing
+##  Testing
 
 Use tools like **Postman** or **Thunder Client** to test the API endpoints. Authentication is required for most routes.
 
-## 🤝 Contributing
+##  Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss your ideas.
 
-## 📬 Contact
+##  Contact
 
 **Njoroge Joseph**  
 📧 [njorogekimenyu@gmail.com](mailto:njorogekimenyu@gmail.com)  
